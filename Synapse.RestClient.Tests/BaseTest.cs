@@ -30,7 +30,7 @@ namespace Synapse.RestClient
 
         protected string GetTextResource(string name)
         {
-            using (var res = System.Reflection.Assembly.GetExecutingAssembly().GetManifestResourceStream("Synapse.RestClient.Resources." + name))
+            using (var res = System.Reflection.Assembly.GetExecutingAssembly().GetManifestResourceStream("Synapse.RestClient.Support.Resources." + name))
             {
                 using (var s = new System.IO.StreamReader(res))
                 {
