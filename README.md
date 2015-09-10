@@ -1,1 +1,2 @@
-# SynapsePay .NET Rest Client
+# Unofficial SynapsePay .NET Rest Client
+
