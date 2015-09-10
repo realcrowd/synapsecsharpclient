@@ -9,7 +9,7 @@ namespace Synapse.RestClient
     public static class SynapseTestDocumentValues
     {
         public const string FailSSNValidation = "1111";
-        public const string PassValidationNoVerification = "2222";
+        public const string PassValidationNoVerificationRequired = "2222";
         public const string PassValidationButVerificationRequired = "3333";
     }
     public class Person

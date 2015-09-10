@@ -22,7 +22,7 @@ namespace Synapse.RestClient.User
 
         protected override Person CreatePerson()
         {
-            return Person.CreateRandom(SynapseTestDocumentValues.PassValidationNoVerification);
+            return Person.CreateRandom(SynapseTestDocumentValues.PassValidationNoVerificationRequired);
         }
 
         [TestMethod]
