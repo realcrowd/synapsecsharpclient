@@ -5,8 +5,10 @@ Provides API interfaces & strongly-typed request/responses for SynapsePay's v3 A
 # Usage
 ## Simplest
 ```csharp
-var api = new SynapseUserApiClient(new SynapseApiCredentials { ClientId="<clientid>", ClientSecret="<clientsecret>" },
-"https://sandbox.synapsepay.com/api/v3/");
+var api = new SynapseUserApiClient(new SynapseApiCredentials { 
+            ClientId="<clientid>", 
+            ClientSecret="<clientsecret>
+}, "https://sandbox.synapsepay.com/api/v3/");
 var resp = api.CreateUser(return new CreateUserRequest
             {
                 EmailAddress = "olfred@sleepwell.biz",
