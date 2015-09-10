@@ -9,7 +9,7 @@ var api = new SynapseUserApiClient(new SynapseApiCredentials {
             ClientId="<clientid>", 
             ClientSecret="<clientsecret>"
 }, "https://sandbox.synapsepay.com/api/v3/");
-var resp = await api.CreateUserAsync(return new CreateUserRequest
+var resp = await api.CreateUserAsync(new CreateUserRequest
             {
                 EmailAddress = "olfred@sleepwell.biz",
                 FirstName = "Freddy",
