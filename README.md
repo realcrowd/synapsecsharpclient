@@ -1,6 +1,7 @@
 # Unofficial SynapsePay .NET Rest Client
 
-Provides interfaces & strong types for caling into SynapsePay's v3 API.
+Provides API interfaces & strongly-typed request/responses for SynapsePay's v3 API.
+
 # Usage
 ## Simplest
 ```csharp
