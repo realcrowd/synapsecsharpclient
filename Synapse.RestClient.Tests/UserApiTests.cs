@@ -8,27 +8,25 @@ using Should;
 
 namespace Synapse.RestClient.User
 {
+    using User;
+    using Node;
     [TestClass]
     public class UserApiTests : BaseScenarioTest
     {
-        ISynapseUserApiClient _api;
+        ISynapseUserApiClient _user;
 
         [TestInitialize]
         public override void Init()
         {
             base.Init();
-            this._api = new SynapseUserApiClient(this.Credentials, this.BaseUrl);
+            this._user = new SynapseUserApiClient(this.Credentials, this.BaseUrl);
         }
 
-        protected override Person CreatePerson()
-        {
-            return Person.CreateRandom(SynapseTestDocumentValues.PassValidationNoVerificationRequired);
-        }
 
         [TestMethod]
         public async Task CreatesUser()
         {
-            var result = await this._api.CreateUserAsync(this.CreateUserRequest());
+            var result = await this._user.CreateUserAsync(this.CreateUserRequest());
 
             result.ShouldNotBeNull();
             result.Success.ShouldBeTrue();
@@ -41,8 +39,8 @@ namespace Synapse.RestClient.User
         [TestMethod]
         public async Task AddsKycSuccessfully()
         {
-            var user = await this._api.CreateUserAsync(this.CreateUserRequest());
-            var result = await this._api.AddKycAsync(this.CreateKycRequest(user.OAuth));
+            var user = await this._user.CreateUserAsync(this.CreateUserRequest());
+            var result = await this._user.AddKycAsync(this.CreateKycRequest(user.OAuth));
 
             result.ShouldNotBeNull();
             result.Success.ShouldBeTrue();
@@ -53,17 +51,13 @@ namespace Synapse.RestClient.User
         [TestMethod]
         public async Task AddsDocumentation()
         {
-            var user = await this._api.CreateUserAsync(this.CreateUserRequest());
-            var kyc = await this._api.AddKycAsync(this.CreateKycRequest(user.OAuth));
-            var result = await this._api.AddDocAsync(new AddDocRequest
-            {
-                OAuth = user.OAuth,
-                Attachment = GetTextResource("Base64Attachment.txt"),
-                Fingerprint = Fingerprint
-            });
+            var user = await this._user.CreateUserAsync(this.CreateUserRequest());
+            var kyc = await this._user.AddKycAsync(this.CreateKycRequest(user.OAuth));
+            var result = await this._user.AddDocAsync(this.CreateAddDocRequest(user.OAuth));
             result.ShouldNotBeNull();
             result.Success.ShouldBeTrue();
             //result.Permission.ShouldEqual(SynapsePermission.SendAndReceive);  //TODO: Discuss
         }
+
     }
 }

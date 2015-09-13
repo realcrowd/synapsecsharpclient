@@ -7,6 +7,8 @@ using System.Threading.Tasks;
 
 namespace Synapse.RestClient
 {
+    using User;
+    using Node;
     public abstract class BaseScenarioTest : BaseTest
     {
         protected Person Person { get; set; }
@@ -17,8 +19,10 @@ namespace Synapse.RestClient
             this.Person = this.CreatePerson();
         }
 
-        protected abstract Person CreatePerson();
-
+        protected virtual Person CreatePerson()
+        {
+            return Person.CreateRandom(SynapseTestDocumentValues.PassValidationNoVerificationRequired);
+        }
 
         protected CreateUserRequest CreateUserRequest()
         {
@@ -44,13 +48,38 @@ namespace Synapse.RestClient
                 City = "Brooklyn",
                 State = "New York",
                 PostalCode = "11215",
-                CountryCode = "USA",
+                CountryCode = "US",
                 DateOfBirth = DateTime.Parse("10/19/1979").Date,
                 DocumentType = SynapseDocumentType.SSN,
                 DocumentValue = this.Person.DocumentValue,
                 Fingerprint = Fingerprint,
                 FirstName = this.Person.FirstName,
                 LastName = this.Person.LastName
+            };
+        }
+
+        protected AddDocRequest CreateAddDocRequest(SynapseUserOAuth oauth)
+        {
+            return new AddDocRequest
+            {
+                OAuth = oauth,
+                Attachment = GetTextResource("Base64Attachment.txt"),
+                Fingerprint = Fingerprint
+            };
+        }
+        protected AddACHNodeRequest CreateAddACHNodeRequest(SynapseUserOAuth oauth)
+        {
+            return new AddACHNodeRequest
+            {
+                OAuth = oauth,
+                AccountClass = SynapseNodeClass.Checking,
+                AccountNumber = "1234",
+                RoutingNumber = "021000021", //Chase NYC
+                AccountType = SynapseNodeType.Personal,
+                Fingerprint = Fingerprint,
+                LocalId = "1234",
+                NameOnAccount = "Freddy Krueger Jr.",
+                Nickname = "Freddy's Chase Checking"
             };
         }
     }

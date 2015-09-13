@@ -71,13 +71,13 @@ namespace Synapse.RestClient.User
 
             var resp = await this._api.ExecuteTaskAsync(req);
             dynamic data = SimpleJson.DeserializeObject(resp.Content);
-            if(IsHttpOk(resp) && data.success)
+            if(resp.IsHttpOk() && data.success)
             {
                 var oauth = data.oauth;
                 return new CreateUserResponse
                 {
                     Success = true,
-                    Message = TryGetMessage(data),
+                    Message = ApiHelper.TryGetMessage(data),
                     SynapseOId = data.user._id["$oid"],
                     SynapseClientId = data.user.client.id.ToString(),
                     OAuth = new SynapseUserOAuth
@@ -92,7 +92,7 @@ namespace Synapse.RestClient.User
             {
                 return new CreateUserResponse
                 {
-                    Message = TryGetError(data),
+                    Message = ApiHelper.TryGetError(data),
                     Success = false
                 };
             };
@@ -130,14 +130,14 @@ namespace Synapse.RestClient.User
 
             var resp = await this._api.ExecuteTaskAsync(req);
             dynamic data = SimpleJson.DeserializeObject(resp.Content);
-            if(IsHttpOk(resp) && data.success)
+            if(resp.IsHttpOk() && data.success)
             {
                 return new AddKycResponse
                 {
                     Success = true,
-                    Message = TryGetMessage(data),
+                    Message = ApiHelper.TryGetMessage(data),
                     Permission = ParsePermission(data.user.permission),
-                    NeedsValidation = PropertyExists(data, "question_set")
+                    NeedsValidation = ApiHelper.PropertyExists(data, "question_set")
                 };
             }
             else
@@ -145,7 +145,7 @@ namespace Synapse.RestClient.User
                 return new AddKycResponse
                 {
                     Success = false,
-                    Message = TryGetError(data)
+                    Message = ApiHelper.TryGetError(data)
                 };
             }
         }
@@ -173,43 +173,21 @@ namespace Synapse.RestClient.User
 
             var resp = await this._api.ExecuteTaskAsync(req);
             dynamic data = SimpleJson.DeserializeObject(resp.Content);
-            if(IsHttpOk(resp) && data.success)
+            if(resp.IsHttpOk() && data.success)
             {
                 return new AddDocResponse
                 {
                     Success = true,
-                    Message = TryGetMessage(data)
+                    Message = ApiHelper.TryGetMessage(data)
                 };
             } else
             {
                 return new AddDocResponse
                 {
                     Success = false,
-                    Message = TryGetError(data)
+                    Message = ApiHelper.TryGetError(data)
                 };
             }
-        }
-
-        private static bool IsHttpOk(IRestResponse r)
-        {
-            return r.StatusCode == System.Net.HttpStatusCode.OK;
-        }
-
-        private static string TryGetMessage(dynamic response)
-        {
-            if (!PropertyExists(response, "message")) return String.Empty;
-            return response.message.en;
-        }
-
-        private static string TryGetError(dynamic response)
-        {
-            if (!PropertyExists(response, "error")) return String.Empty;
-            return response.error.en;
-        }
-
-        public static bool PropertyExists(dynamic settings, string name)
-        {
-            return settings.ContainsKey(name);
         }
 
         private static SynapsePermission ParsePermission(string permission)
