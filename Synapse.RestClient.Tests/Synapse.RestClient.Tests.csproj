@@ -60,11 +60,13 @@
     </Otherwise>
   </Choose>
   <ItemGroup>
-    <Compile Include="BaseScenarioTest.cs" />
-    <Compile Include="BaseTest.cs" />
+    <Compile Include="Support\BaseScenarioTest.cs" />
+    <Compile Include="Support\BaseTest.cs" />
+    <Compile Include="NodeApiTests.cs" />
     <Compile Include="Support\Person.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="User\UserApiTests.cs" />
+    <Compile Include="EndToEndIntegrationTests.cs" />
+    <Compile Include="UserApiTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Synapse.RestClient\Synapse.RestClient.csproj">

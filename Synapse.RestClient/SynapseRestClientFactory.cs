@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 namespace Synapse.RestClient
 {
     using User;
+    using Node;
     public class SynapseRestClientFactory
     {
         private SynapseApiCredentials _creds;
@@ -20,6 +21,10 @@ namespace Synapse.RestClient
         public ISynapseUserApiClient CreateUserClient()
         {
             return new SynapseUserApiClient(this._creds, this._baseUrl);
+        }
+        public ISynapseNodeApiClient CreateNodeClient()
+        {
+            return new SynapseNodeApiClient(this._creds, this._baseUrl);
         }
     }
 }

@@ -14,6 +14,7 @@ namespace Synapse.RestClient
     {
         protected string BaseUrl;
         protected SynapseApiCredentials Credentials;
+        protected SynapseRestClientFactory Factory { get; set; }
 
         protected const string Fingerprint = "suasusau21324redakufejfjsf";
         [TestInitialize]
@@ -25,6 +26,7 @@ namespace Synapse.RestClient
                 ClientId = ConfigurationManager.AppSettings["SynapseClientId"],
                 ClientSecret = ConfigurationManager.AppSettings["SynapseClientSecret"]
             };
+            this.Factory = new SynapseRestClientFactory(Credentials, BaseUrl);
         }
         
 
