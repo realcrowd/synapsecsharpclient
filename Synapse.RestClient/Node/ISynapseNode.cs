@@ -11,12 +11,14 @@ namespace Synapse.RestClient.Node
     {
         Task<AddACHNodeResponse> AddACHNodeAsync(AddACHNodeRequest req);
         Task<VerifyACHNodeResponse> VerifyACHNodeAsync(VerifyACHNodeRequest req);
+        event RequestEventHandler OnAfterRequest;
     }
 
     public class SynapseNodeApiClient : ISynapseNodeApiClient
     {
         SynapseApiCredentials _creds;
         IRestClient _api;
+        public event RequestEventHandler OnAfterRequest = delegate { };
 
         public SynapseNodeApiClient(SynapseApiCredentials creds, string baseUrl) : this(creds, new RestSharp.RestClient(new Uri(baseUrl, UriKind.Absolute)))
         {
@@ -64,6 +66,7 @@ namespace Synapse.RestClient.Node
             req.AddJsonBody(body);
             var resp = await this._api.ExecuteTaskAsync(req);
             dynamic data = SimpleJson.DeserializeObject(resp.Content);
+            RaiseOnAfterRequest(body, req, resp);
             if (resp.IsHttpOk() && data.success)
             {
                 var node = data.nodes[0];
@@ -116,6 +119,7 @@ namespace Synapse.RestClient.Node
             req.AddJsonBody(body);
             var resp = await this._api.ExecuteTaskAsync(req);
             dynamic data = SimpleJson.DeserializeObject(resp.Content);
+            RaiseOnAfterRequest(body, req, resp);
             if (resp.IsHttpOk() && data.success)
             {
                 if (data.nodes.Count != 1) throw new InvalidOperationException("Nodes count was expected to be 1");
@@ -139,6 +143,10 @@ namespace Synapse.RestClient.Node
             }
         }
 
+        private void RaiseOnAfterRequest(object body, IRestRequest req, IRestResponse resp)
+        {
+            OnAfterRequest(resp.ResponseUri.ToString(), resp.StatusCode, SimpleJson.SerializeObject(body), resp.Content);
+        }
         private static SynapseNodePermission ParseNodePermission(string allowed)
         {
             if (allowed == "CREDIT") return SynapseNodePermission.Credit;

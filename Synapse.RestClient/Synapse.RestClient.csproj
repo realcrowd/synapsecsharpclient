@@ -46,11 +46,14 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ApiHelper.cs" />
+    <Compile Include="BaseApiClient.cs" />
     <Compile Include="Node\ISynapseNode.cs" />
     <Compile Include="Node\Models.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SynapseApiCredentials.cs" />
     <Compile Include="SynapseRestClientFactory.cs" />
+    <Compile Include="Transaction\ITransactionApi.cs" />
+    <Compile Include="Transaction\Models.cs" />
     <Compile Include="User\ISynapseUser.cs" />
     <Compile Include="User\Models.cs" />
   </ItemGroup>
