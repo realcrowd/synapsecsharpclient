@@ -13,13 +13,14 @@ namespace Synapse.RestClient.User
         Task<CreateUserResponse> CreateUserAsync(CreateUserRequest req);
         Task<AddKycResponse> AddKycAsync(AddKycRequest req);
         Task<AddDocResponse> AddDocAsync(AddDocRequest req);
+        event RequestEventHandler OnAfterRequest;
     }    
 
     public class SynapseUserApiClient : ISynapseUserApiClient
     {
         SynapseApiCredentials _creds;
         IRestClient _api;
-
+        public event RequestEventHandler OnAfterRequest = delegate { };
         public SynapseUserApiClient(SynapseApiCredentials creds, string baseUrl) : this(creds, new RestSharp.RestClient(new Uri(baseUrl, UriKind.Absolute)))
         {
 
@@ -71,7 +72,9 @@ namespace Synapse.RestClient.User
 
             var resp = await this._api.ExecuteTaskAsync(req);
             dynamic data = SimpleJson.DeserializeObject(resp.Content);
-            if(resp.IsHttpOk() && data.success)
+            RaiseOnAfterRequest(body, req, resp);
+
+            if (resp.IsHttpOk() && data.success)
             {
                 var oauth = data.oauth;
                 return new CreateUserResponse
@@ -130,7 +133,8 @@ namespace Synapse.RestClient.User
 
             var resp = await this._api.ExecuteTaskAsync(req);
             dynamic data = SimpleJson.DeserializeObject(resp.Content);
-            if(resp.IsHttpOk() && data.success)
+            RaiseOnAfterRequest(body, req, resp);
+            if (resp.IsHttpOk() && data.success)
             {
                 return new AddKycResponse
                 {
@@ -173,6 +177,8 @@ namespace Synapse.RestClient.User
 
             var resp = await this._api.ExecuteTaskAsync(req);
             dynamic data = SimpleJson.DeserializeObject(resp.Content);
+            RaiseOnAfterRequest(body, req, resp);
+
             if(resp.IsHttpOk() && data.success)
             {
                 return new AddDocResponse
@@ -188,6 +194,11 @@ namespace Synapse.RestClient.User
                     Message = ApiHelper.TryGetError(data)
                 };
             }
+        }
+
+        private void RaiseOnAfterRequest(object body, IRestRequest req, IRestResponse resp)
+        {
+            OnAfterRequest(resp.ResponseUri.ToString(), resp.StatusCode, SimpleJson.SerializeObject(body), resp.Content);
         }
 
         private static SynapsePermission ParsePermission(string permission)
