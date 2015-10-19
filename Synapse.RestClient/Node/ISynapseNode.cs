@@ -71,7 +71,6 @@ namespace Synapse.RestClient.Node
             {
                 var node = data.nodes[0];
                 var info = node.info;
-                if (info.account_num != msg.AccountNumber) throw new NotSupportedException("Expected returned node to be the same as the requested node");
                 return new AddACHNodeResponse
                 {
                     Success = true,
