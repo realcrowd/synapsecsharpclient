@@ -184,6 +184,7 @@ namespace Synapse.RestClient.User
                 return new AddDocResponse
                 {
                     Success = true,
+                    Permission = ParsePermission(data.user.permission),
                     Message = ApiHelper.TryGetMessage(data)
                 };
             } else
