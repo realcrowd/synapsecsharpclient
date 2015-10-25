@@ -45,7 +45,7 @@ namespace Synapse.RestClient.User
             result.ShouldNotBeNull();
             result.Success.ShouldBeTrue();
             //result.Permission.ShouldEqual(SynapsePermission.ReceiveOnly); //TODO: Discuss
-            result.NeedsValidation.ShouldBeFalse();
+            result.HasKBAQuestions.ShouldBeFalse();
         }
 
         [TestMethod]
@@ -59,5 +59,30 @@ namespace Synapse.RestClient.User
             //result.Permission.ShouldEqual(SynapsePermission.SendAndReceive);  //TODO: Discuss
         }
 
+
+        [TestMethod]
+        public async Task GetsKBAQuestionSet()
+        {
+            this.Person = this.CreatePerson(SynapseTestDocumentValues.PassValidationButVerificationRequired);
+            var user = await this._user.CreateUserAsync(this.CreateUserRequest());
+            var kyc = await this._user.AddKycAsync(this.CreateKycRequest(user.OAuth));
+            kyc.ShouldNotBeNull();
+            kyc.Success.ShouldBeTrue();
+            kyc.HasKBAQuestions.ShouldBeTrue();            
+            kyc.KBAQuestionSet.ShouldNotBeNull();
+            kyc.KBAQuestionSet.Questions.Length.ShouldEqual(5);
+            foreach(var q in kyc.KBAQuestionSet.Questions)
+            {
+                q.Id.ShouldBeGreaterThan(0);
+                q.Text.ShouldNotBeEmpty();
+                q.Answers.Length.ShouldEqual(5);
+                foreach(var a in q.Answers)
+                {
+                    a.Id.ShouldBeGreaterThan(0);
+                    a.Text.ShouldNotBeEmpty();
+                }
+            }
+            //result.Permission.ShouldEqual(SynapsePermission.SendAndReceive);  //TODO: Discuss
+        }
     }
 }

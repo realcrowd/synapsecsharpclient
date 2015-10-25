@@ -54,7 +54,8 @@ namespace Synapse.RestClient.User
     {
         public bool Success { get; set; }
         public string Message { get; set; }
-        public bool NeedsValidation { get; set; }
+        public bool HasKBAQuestions { get; set; }
+        public QuestionSet KBAQuestionSet { get; set; }
         public SynapsePermission Permission { get; set; }
     }
 
@@ -83,6 +84,25 @@ namespace Synapse.RestClient.User
         SendAndReceive,
         ReceiveOnly,
         Locked
+    }
+
+    public class QuestionSet
+    {
+        public DateTime CreatedAtUtc { get; set; }
+        public Question[] Questions { get; set; } 
+    }
+
+    public class Question
+    {
+        public int Id { get; set; }
+        public string Text { get; set; }
+        public Answer[] Answers { get; set; }
+    }
+
+    public class Answer
+    {
+        public int Id { get; set; }
+        public string Text { get; set; }
     }
 
 }

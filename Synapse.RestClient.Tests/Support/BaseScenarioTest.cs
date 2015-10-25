@@ -16,12 +16,12 @@ namespace Synapse.RestClient
         public override void Init()
         {
             base.Init();
-            this.Person = this.CreatePerson();
+            this.Person = this.CreatePerson(SynapseTestDocumentValues.PassValidationNoVerificationRequired);
         }
 
-        protected virtual Person CreatePerson()
+        protected virtual Person CreatePerson(string ssn)
         {
-            return Person.CreateRandom(SynapseTestDocumentValues.PassValidationNoVerificationRequired);
+            return Person.CreateRandom(ssn);
         }
 
         protected CreateUserRequest CreateUserRequest()

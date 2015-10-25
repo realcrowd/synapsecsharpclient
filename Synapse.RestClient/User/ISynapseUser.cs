@@ -135,17 +135,57 @@ namespace Synapse.RestClient.User
             dynamic data = SimpleJson.DeserializeObject(resp.Content);
             RaiseOnAfterRequest(body, req, resp);
             if (resp.IsHttpOk() && data.success)
-            {
+            {                
                 return new AddKycResponse
                 {
                     Success = true,
                     Message = ApiHelper.TryGetMessage(data),
                     Permission = ParsePermission(data.user.permission),
-                    NeedsValidation = ApiHelper.PropertyExists(data, "question_set")
+                    HasKBAQuestions = false
                 };
             }
             else
             {
+                if (resp.StatusCode == System.Net.HttpStatusCode.Accepted && data.success)
+                {
+                    if (data.error_code == "10" && ApiHelper.PropertyExists(data, "question_set")) //Magic number for "need KBA"
+                    {
+                        var questions = new List<Question>();
+
+                        foreach (dynamic q in data.question_set.questions)
+                        {
+                            var answers = new List<Answer>();
+                            var question = new Question
+                            {
+                                Id = Convert.ToInt32(q.id),
+                                Text = q.question
+                            };
+                            
+                            foreach(dynamic a in q.answers)
+                            {
+                                answers.Add(new Answer {
+                                    Id = Convert.ToInt32(a.id),
+                                    Text = a.answer });
+                            }
+
+                            question.Answers = answers.OrderBy(c => c.Id).ToArray();
+                            questions.Add(question);
+                        }
+                        var response = new AddKycResponse
+                        {
+                            HasKBAQuestions = true,
+                            KBAQuestionSet = new QuestionSet {
+                                Questions = questions.ToArray(),
+                                CreatedAtUtc = DateTime.UtcNow //TODO: there is a timestamp from synapse, might be important                               
+                            },
+                            Success = true,
+                            Message = ApiHelper.TryGetMessage(data),
+                            Permission = SynapsePermission.Unverified
+
+                        };
+                        return response;
+                    }
+                }
                 return new AddKycResponse
                 {
                     Success = false,
