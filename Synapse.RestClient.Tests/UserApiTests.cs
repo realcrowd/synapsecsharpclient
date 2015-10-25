@@ -84,5 +84,31 @@ namespace Synapse.RestClient.User
             }
             //result.Permission.ShouldEqual(SynapsePermission.SendAndReceive);  //TODO: Discuss
         }
+        [TestMethod]
+        public async Task AnswerKBAFully()
+        {
+            this.Person = this.CreatePerson(SynapseTestDocumentValues.PassValidationButVerificationRequired);
+            var user = await this._user.CreateUserAsync(this.CreateUserRequest());
+            var kyc = await this._user.AddKycAsync(this.CreateKycRequest(user.OAuth));
+            var answ = await this._user.VerifyKYCInfo(new VerifyKYCInfoRequest
+            {
+                 Fingerprint = Fingerprint,
+                 OAuth = user.OAuth,
+                 QuestionSetId = kyc.KBAQuestionSet.Id,
+                 Answers = new VerifyKYCInfoAnswer[]
+                 {
+                     new VerifyKYCInfoAnswer { AnswerId = 5, QuestionId =1 },
+                     new VerifyKYCInfoAnswer { AnswerId = 5, QuestionId =2 },
+                     new VerifyKYCInfoAnswer { AnswerId = 5, QuestionId =3 },
+                     new VerifyKYCInfoAnswer { AnswerId = 5, QuestionId =4 },
+                     new VerifyKYCInfoAnswer { AnswerId = 5, QuestionId =5 },
+                     new VerifyKYCInfoAnswer { AnswerId = 5, QuestionId =6 }
+                 }
+            });
+            answ.ShouldNotBeNull();
+            answ.Success.ShouldBeTrue();
+            
+            //result.Permission.ShouldEqual(SynapsePermission.SendAndReceive);  //TODO: Discuss
+        }
     }
 }

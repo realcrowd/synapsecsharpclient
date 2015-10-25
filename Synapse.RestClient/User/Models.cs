@@ -59,6 +59,29 @@ namespace Synapse.RestClient.User
         public SynapsePermission Permission { get; set; }
     }
 
+    public class VerifyKYCInfoRequest
+    {
+        public SynapseUserOAuth OAuth { get; set; }
+        public string QuestionSetId { get; set; }      
+        public VerifyKYCInfoAnswer[] Answers { get; set; }
+        public string Fingerprint { get; set; }
+    }
+
+    public class VerifyKYCInfoAnswer
+    {
+        public int QuestionId { get; set; }
+        public int AnswerId { get; set; }
+    }
+    public class VerifyKYCInfoResponse
+    {
+        public bool Success { get; set; }
+        public string Message { get; set; }
+        public SynapsePermission Permission { get; set; }
+    }
+
+
+    
+
     public class AddDocRequest
     {
         public SynapseUserOAuth OAuth { get; set; }
@@ -88,6 +111,7 @@ namespace Synapse.RestClient.User
 
     public class QuestionSet
     {
+        public string Id { get; set; }
         public DateTime CreatedAtUtc { get; set; }
         public Question[] Questions { get; set; } 
     }

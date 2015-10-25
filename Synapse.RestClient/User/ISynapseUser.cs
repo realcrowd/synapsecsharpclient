@@ -13,6 +13,7 @@ namespace Synapse.RestClient.User
         Task<CreateUserResponse> CreateUserAsync(CreateUserRequest req);
         Task<AddKycResponse> AddKycAsync(AddKycRequest req);
         Task<AddDocResponse> AddDocAsync(AddDocRequest req);
+        Task<VerifyKYCInfoResponse> VerifyKYCInfo(VerifyKYCInfoRequest req);
         event RequestEventHandler OnAfterRequest;
     }    
 
@@ -175,6 +176,7 @@ namespace Synapse.RestClient.User
                         {
                             HasKBAQuestions = true,
                             KBAQuestionSet = new QuestionSet {
+                                Id = data.question_set.id,
                                 Questions = questions.ToArray(),
                                 CreatedAtUtc = DateTime.UtcNow //TODO: there is a timestamp from synapse, might be important                               
                             },
@@ -192,6 +194,52 @@ namespace Synapse.RestClient.User
                     Message = ApiHelper.TryGetError(data)
                 };
             }
+        }
+
+        public async Task<VerifyKYCInfoResponse> VerifyKYCInfo(VerifyKYCInfoRequest msg)
+        {
+            var req = new RestRequest("user/doc/verify", Method.POST);
+            var body = new
+            {
+                login = new
+                {
+                    oauth_key = msg.OAuth.Key,
+                },
+                user = new
+                {
+                    doc = new
+                    {
+                        question_set_id = msg.QuestionSetId,
+                        answers = msg.Answers.Select(c=>new {  question_id = c.QuestionId, answer_id = c.AnswerId }).ToArray()
+                    },
+                    fingerprint = msg.Fingerprint
+                },
+
+            };
+            req.AddJsonBody(body);
+
+            var resp = await this._api.ExecuteTaskAsync(req);
+            dynamic data = SimpleJson.DeserializeObject(resp.Content);
+            RaiseOnAfterRequest(body, req, resp);
+
+            if (resp.IsHttpOk() && data.success)
+            {
+                return new VerifyKYCInfoResponse
+                {
+                    Success = true,
+                    Permission = ParsePermission(data.user.permission),
+                    Message = ApiHelper.TryGetMessage(data)
+                };
+            }
+            else
+            {
+                return new VerifyKYCInfoResponse
+                {
+                    Success = false,
+                    Message = ApiHelper.TryGetError(data)
+                };
+            }
+
         }
 
         public async Task<AddDocResponse> AddDocAsync(AddDocRequest msg)
