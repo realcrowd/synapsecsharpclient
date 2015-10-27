@@ -110,5 +110,24 @@ namespace Synapse.RestClient.User
             
             //result.Permission.ShouldEqual(SynapsePermission.SendAndReceive);  //TODO: Discuss
         }
+
+        [TestMethod]
+
+        public async Task RefreshToken()
+        {
+            var token = await this._user.RefreshToken(new RefreshTokenRequest
+            {
+                Fingerprint = "c1c4622e155d1ba135f161a6228b2c2c",
+                SynapseOId = "562d50fb86c27374bdd58257",
+                RefreshToken = "refresh-691a462f-bc9c-4cc9-af5a-68dc2c7afbda",
+                IPAddress = "10.1.0.1"
+            });
+
+            token.Success.ShouldBeTrue();
+            token.OAuth.ShouldNotBeNull();
+            token.OAuth.Key.ShouldNotBeNull();
+            token.OAuth.RefreshToken.ShouldNotBeNull();
+            token.OAuth.ExpirationUtc.ShouldBeGreaterThan(DateTime.UtcNow);
+        }
     }
 }

@@ -11,6 +11,8 @@ namespace Synapse.RestClient.User
     public interface ISynapseUserApiClient
     {
         Task<CreateUserResponse> CreateUserAsync(CreateUserRequest req);
+        Task<RefreshTokenResponse> RefreshToken(RefreshTokenRequest req);
+
         Task<AddKycResponse> AddKycAsync(AddKycRequest req);
         Task<AddDocResponse> AddDocAsync(AddDocRequest req);
         Task<VerifyKYCInfoResponse> VerifyKYCInfo(VerifyKYCInfoRequest req);
@@ -87,7 +89,8 @@ namespace Synapse.RestClient.User
                     OAuth = new SynapseUserOAuth
                     {                        
                         Key = oauth.oauth_key,                         
-                        RefreshToken = oauth.refresh_token
+                        RefreshToken = oauth.refresh_token,
+                        ExpirationUtc = ApiHelper.UnixTimestampToUtc(oauth.expires_at)
                     },
                     Permission = ParsePermission(data.user.permission)
                 };
@@ -278,6 +281,65 @@ namespace Synapse.RestClient.User
             } else
             {
                 return new AddDocResponse
+                {
+                    Success = false,
+                    Message = ApiHelper.TryGetError(data)
+                };
+            }
+        }
+
+        public async Task<RefreshTokenResponse> RefreshToken(RefreshTokenRequest msg)
+        {
+            var req = new RestRequest("user/signin", Method.POST);
+            var _id = new Dictionary<string, string>()
+            {
+                { "$oid", msg.SynapseOId }
+            };            
+
+            dynamic body = new
+            {
+                client = new
+                {
+                    client_id = this._creds.ClientId,
+                    client_secret = this._creds.ClientSecret
+                },
+                login = new
+                {
+                    refresh_token = msg.RefreshToken,
+                },
+                user = new
+                {
+                    _id = _id,
+                    ip = msg.IPAddress,
+                    fingerprint = msg.Fingerprint
+                },
+
+            };
+
+            req.AddJsonBody(body);
+
+            var resp = await this._api.ExecuteTaskAsync(req);
+            dynamic data = SimpleJson.DeserializeObject(resp.Content);
+            RaiseOnAfterRequest(body, req, resp);
+
+            if (resp.IsHttpOk() && data.success)
+            {
+                var oauth = data.oauth;
+                return new RefreshTokenResponse
+                {
+                    Success = true,
+                    OAuth = new SynapseUserOAuth
+                    {
+                        Key = oauth.oauth_key,
+                        RefreshToken = oauth.refresh_token,
+                        ExpirationUtc = ApiHelper.UnixTimestampToUtc(Convert.ToInt64(oauth.expires_at))
+                    },
+                    Message = ApiHelper.TryGetMessage(data)
+                };
+            }
+            else
+            {
+                return new RefreshTokenResponse
                 {
                     Success = false,
                     Message = ApiHelper.TryGetError(data)
