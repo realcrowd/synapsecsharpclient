@@ -21,6 +21,7 @@ namespace Synapse.RestClient.User
     {
         public string Key { get; set; }
         public string RefreshToken { get; set; }
+        public DateTime ExpirationUtc { get; set; }
     }
     
     public class CreateUserResponse
@@ -96,6 +97,21 @@ namespace Synapse.RestClient.User
         public SynapsePermission Permission { get; set; }
     }
 
+    public class RefreshTokenRequest
+    {
+        public string RefreshToken { get; set; }
+        public string SynapseOId { get; set; }
+        public string IPAddress { get; set; }
+        public string Fingerprint { get; set; }
+
+    }
+
+    public class RefreshTokenResponse
+    {
+        public SynapseUserOAuth OAuth { get; set; }
+        public bool Success { get; set; }
+        public string Message { get; set; }
+    }
     public enum SynapseDocumentType
     {
         None = 0,
