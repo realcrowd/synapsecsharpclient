@@ -66,6 +66,7 @@
     <Compile Include="Support\Person.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="EndToEndIntegrationTests.cs" />
+    <Compile Include="TransactionApiTests.cs" />
     <Compile Include="UserApiTests.cs" />
   </ItemGroup>
   <ItemGroup>

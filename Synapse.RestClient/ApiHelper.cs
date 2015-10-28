@@ -14,13 +14,18 @@ namespace Synapse.RestClient
             return r.StatusCode == System.Net.HttpStatusCode.OK;
         }
 
-        public static DateTime UnixTimestampToUtc(long timestamp)
+        public static DateTime UnixTimestampInSecondsToUtc(long timestamp)
         {
             var dt = new DateTime(1970, 1, 1, 0, 0, 0, 0, System.DateTimeKind.Utc);
             dt = dt.AddSeconds(timestamp);
             return dt;
         }
-
+        public static DateTime UnixTimestampInMillisecondsToUtc(long timestamp)
+        {
+            var dt = new DateTime(1970, 1, 1, 0, 0, 0, 0, System.DateTimeKind.Utc);
+            dt = dt.AddMilliseconds(timestamp);
+            return dt;
+        }
         public static async Task<T> Execute<T>(this IRestClient client, IRestRequest req, Func<dynamic,T> onHttpOk, Func<dynamic,T> onHttpErr)
         {
             var resp = await client.ExecuteTaskAsync(req);

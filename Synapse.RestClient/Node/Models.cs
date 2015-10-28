@@ -62,4 +62,5 @@ namespace Synapse.RestClient.Node
         public SynapseNodePermission Permission { get; set; }
         public bool IsActive { get; set; }
     }
+
 }
