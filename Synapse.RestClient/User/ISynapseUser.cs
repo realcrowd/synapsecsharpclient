@@ -90,7 +90,7 @@ namespace Synapse.RestClient.User
                     {                        
                         Key = oauth.oauth_key,                         
                         RefreshToken = oauth.refresh_token,
-                        ExpirationUtc = ApiHelper.UnixTimestampToUtc(oauth.expires_at)
+                        ExpirationUtc = ApiHelper.UnixTimestampInSecondsToUtc(Convert.ToInt64(oauth.expires_at))
                     },
                     Permission = ParsePermission(data.user.permission)
                 };
@@ -332,7 +332,7 @@ namespace Synapse.RestClient.User
                     {
                         Key = oauth.oauth_key,
                         RefreshToken = oauth.refresh_token,
-                        ExpirationUtc = ApiHelper.UnixTimestampToUtc(Convert.ToInt64(oauth.expires_at))
+                        ExpirationUtc = ApiHelper.UnixTimestampInSecondsToUtc(Convert.ToInt64(oauth.expires_at))
                     },
                     Message = ApiHelper.TryGetMessage(data)
                 };
