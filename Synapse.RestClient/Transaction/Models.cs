@@ -76,7 +76,6 @@ namespace Synapse.RestClient.Transaction
         Returned = 6
     }
 
-
     public class SynapseCurrencies
     {
         public const string USD = "USD";

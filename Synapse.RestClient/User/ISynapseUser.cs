@@ -74,8 +74,8 @@ namespace Synapse.RestClient.User
             req.AddJsonBody(body);
 
             var resp = await this._api.ExecuteTaskAsync(req);
-            dynamic data = SimpleJson.DeserializeObject(resp.Content);
             RaiseOnAfterRequest(body, req, resp);
+            dynamic data = SimpleJson.DeserializeObject(resp.Content);
 
             if (resp.IsHttpOk() && data.success)
             {
@@ -267,8 +267,8 @@ namespace Synapse.RestClient.User
             req.AddJsonBody(body);
 
             var resp = await this._api.ExecuteTaskAsync(req);
-            dynamic data = SimpleJson.DeserializeObject(resp.Content);
             RaiseOnAfterRequest(body, req, resp);
+            dynamic data = SimpleJson.DeserializeObject(resp.Content);
 
             if(resp.IsHttpOk() && data.success)
             {
@@ -319,8 +319,8 @@ namespace Synapse.RestClient.User
             req.AddJsonBody(body);
 
             var resp = await this._api.ExecuteTaskAsync(req);
-            dynamic data = SimpleJson.DeserializeObject(resp.Content);
             RaiseOnAfterRequest(body, req, resp);
+            dynamic data = SimpleJson.DeserializeObject(resp.Content);
 
             if (resp.IsHttpOk() && data.success)
             {

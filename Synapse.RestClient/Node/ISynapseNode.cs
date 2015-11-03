@@ -65,8 +65,8 @@ namespace Synapse.RestClient.Node
             };
             req.AddJsonBody(body);
             var resp = await this._api.ExecuteTaskAsync(req);
-            dynamic data = SimpleJson.DeserializeObject(resp.Content);
             RaiseOnAfterRequest(body, req, resp);
+            dynamic data = SimpleJson.DeserializeObject(resp.Content);
             if (resp.IsHttpOk() && data.success)
             {
                 var node = data.nodes[0];
@@ -117,8 +117,8 @@ namespace Synapse.RestClient.Node
             };
             req.AddJsonBody(body);
             var resp = await this._api.ExecuteTaskAsync(req);
-            dynamic data = SimpleJson.DeserializeObject(resp.Content);
             RaiseOnAfterRequest(body, req, resp);
+            dynamic data = SimpleJson.DeserializeObject(resp.Content);
             if (resp.IsHttpOk() && data.success)
             {
                 if (data.nodes.Count != 1) throw new InvalidOperationException("Nodes count was expected to be 1");

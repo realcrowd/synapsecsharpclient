@@ -12,6 +12,8 @@ namespace Synapse.RestClient.Transaction
         Task<AddTransactionResponse> AddTransactionAsync(AddTransactionRequest msg);
 
         Task<CancelTransactionResponse> CancelTransactionAsync(CancelTransactionRequest msg);
+
+
         event RequestEventHandler OnAfterRequest;
     }
 
@@ -79,8 +81,8 @@ namespace Synapse.RestClient.Transaction
             req.AddJsonBody(body);
 
             var resp = await this._api.ExecuteTaskAsync(req);
-            dynamic data = SimpleJson.DeserializeObject(resp.Content);
             RaiseOnAfterRequest(body, req, resp);
+            dynamic data = SimpleJson.DeserializeObject(resp.Content);
 
             if(resp.IsHttpOk() && data.success)
             {
@@ -132,8 +134,8 @@ namespace Synapse.RestClient.Transaction
             req.AddJsonBody(body);
 
             var resp = await this._api.ExecuteTaskAsync(req);
-            dynamic data = SimpleJson.DeserializeObject(resp.Content);
             RaiseOnAfterRequest(body, req, resp);
+            dynamic data = SimpleJson.DeserializeObject(resp.Content);
 
             if(resp.IsHttpOk() && data.success)
             {
