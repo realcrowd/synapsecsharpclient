@@ -47,6 +47,7 @@
   <ItemGroup>
     <Compile Include="ApiHelper.cs" />
     <Compile Include="BaseApiClient.cs" />
+    <Compile Include="HMACSignatureValidator.cs" />
     <Compile Include="Node\ISynapseNode.cs" />
     <Compile Include="Node\Models.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
