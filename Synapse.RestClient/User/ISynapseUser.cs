@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using RestSharp;
+using System.Dynamic;
 
 namespace Synapse.RestClient.User
 {
@@ -16,8 +17,11 @@ namespace Synapse.RestClient.User
         Task<AddKycResponse> AddKycAsync(AddKycRequest req);
         Task<AddDocResponse> AddDocAsync(AddDocRequest req);
         Task<VerifyKYCInfoResponse> VerifyKYCInfo(VerifyKYCInfoRequest req);
+
+        Task<ShowUsersResponse> ShowUsersAsync(ShowUsersRequest msg);
+
         event RequestEventHandler OnAfterRequest;
-    }    
+    }
 
     public class SynapseUserApiClient : ISynapseUserApiClient
     {
@@ -53,7 +57,7 @@ namespace Synapse.RestClient.User
                             read_only = true
                         }
                 },
-                legal_names = new []
+                legal_names = new[]
                 {
                     String.Format("{0} {1}", msg.FirstName, msg.LastName)
                 },
@@ -87,8 +91,8 @@ namespace Synapse.RestClient.User
                     SynapseOId = data.user._id["$oid"],
                     SynapseClientId = data.user.client.id.ToString(),
                     OAuth = new SynapseUserOAuth
-                    {                        
-                        Key = oauth.oauth_key,                         
+                    {
+                        Key = oauth.oauth_key,
                         RefreshToken = oauth.refresh_token,
                         ExpirationUtc = ApiHelper.UnixTimestampInSecondsToUtc(Convert.ToInt64(oauth.expires_at))
                     },
@@ -103,7 +107,7 @@ namespace Synapse.RestClient.User
                     Success = false
                 };
             };
-            
+
         }
 
         public async Task<AddKycResponse> AddKycAsync(AddKycRequest msg)
@@ -139,7 +143,7 @@ namespace Synapse.RestClient.User
             dynamic data = SimpleJson.DeserializeObject(resp.Content);
             RaiseOnAfterRequest(body, req, resp);
             if (resp.IsHttpOk() && data.success)
-            {                
+            {
                 return new AddKycResponse
                 {
                     Success = true,
@@ -164,12 +168,14 @@ namespace Synapse.RestClient.User
                                 Id = Convert.ToInt32(q.id),
                                 Text = q.question
                             };
-                            
-                            foreach(dynamic a in q.answers)
+
+                            foreach (dynamic a in q.answers)
                             {
-                                answers.Add(new Answer {
+                                answers.Add(new Answer
+                                {
                                     Id = Convert.ToInt32(a.id),
-                                    Text = a.answer });
+                                    Text = a.answer
+                                });
                             }
 
                             question.Answers = answers.OrderBy(c => c.Id).ToArray();
@@ -178,7 +184,8 @@ namespace Synapse.RestClient.User
                         var response = new AddKycResponse
                         {
                             HasKBAQuestions = true,
-                            KBAQuestionSet = new QuestionSet {
+                            KBAQuestionSet = new QuestionSet
+                            {
                                 Id = data.question_set.id,
                                 Questions = questions.ToArray(),
                                 CreatedAtUtc = DateTime.UtcNow //TODO: there is a timestamp from synapse, might be important                               
@@ -213,7 +220,7 @@ namespace Synapse.RestClient.User
                     doc = new
                     {
                         question_set_id = msg.QuestionSetId,
-                        answers = msg.Answers.Select(c=>new {  question_id = c.QuestionId, answer_id = c.AnswerId }).ToArray()
+                        answers = msg.Answers.Select(c => new { question_id = c.QuestionId, answer_id = c.AnswerId }).ToArray()
                     },
                     fingerprint = msg.Fingerprint
                 },
@@ -262,7 +269,7 @@ namespace Synapse.RestClient.User
                     },
                     fingerprint = msg.Fingerprint
                 },
-                
+
             };
             req.AddJsonBody(body);
 
@@ -270,7 +277,7 @@ namespace Synapse.RestClient.User
             RaiseOnAfterRequest(body, req, resp);
             dynamic data = SimpleJson.DeserializeObject(resp.Content);
 
-            if(resp.IsHttpOk() && data.success)
+            if (resp.IsHttpOk() && data.success)
             {
                 return new AddDocResponse
                 {
@@ -278,7 +285,8 @@ namespace Synapse.RestClient.User
                     Permission = ParsePermission(data.user.permission),
                     Message = ApiHelper.TryGetMessage(data)
                 };
-            } else
+            }
+            else
             {
                 return new AddDocResponse
                 {
@@ -288,13 +296,73 @@ namespace Synapse.RestClient.User
             }
         }
 
+
+        public async Task<ShowUsersResponse> ShowUsersAsync(ShowUsersRequest msg)
+        {
+            var req = new RestRequest("user/client/users", Method.POST);
+            dynamic body = new ExpandoObject();
+
+            body.client = new
+            {
+                client_id = this._creds.ClientId,
+                client_secret = this._creds.ClientSecret
+            };
+            if (msg != null && msg.Filter != null)
+            {
+                body.filter = new
+                {
+                    page = msg.Filter.Page,
+                    query = msg.Filter.Query
+                };
+            }
+            req.AddJsonBody(body);
+
+            var resp = await this._api.ExecuteTaskAsync(req);
+            RaiseOnAfterRequest(body, req, resp);
+            dynamic data = SimpleJson.DeserializeObject(resp.Content);
+
+            if (resp.IsHttpOk() && data.success)
+            {
+                var list = new List<UserRecord>();
+                var users = data.users;
+                var r = new ShowUsersResponse
+                {
+                    Page = Convert.ToInt32(data.page),
+                    PageCount = Convert.ToInt32(data.page_count),
+                    Users = list,
+                    Success = true
+                };
+                foreach (dynamic user in users)
+                {
+                    list.Add(new UserRecord
+                    {
+                        OId = user._id["$oid"],
+                        DateJoinedUtc = ApiHelper.UnixTimestampInMillisecondsToUtc(Convert.ToInt64(user.extra.date_joined["$date"])),
+                        Permission = ParsePermission(user.permission),
+                        SupplementalId = ApiHelper.PropertyExists(user.extra, "supp_id") ? user.extra.supp_id : String.Empty,
+                    });
+                }
+                return r;
+
+            }
+            else
+            {
+                return new ShowUsersResponse
+                {
+                    Message = ApiHelper.TryGetError(data),
+                    Success = false
+                };
+            };
+
+        }
+
         public async Task<RefreshTokenResponse> RefreshToken(RefreshTokenRequest msg)
         {
             var req = new RestRequest("user/signin", Method.POST);
             var _id = new Dictionary<string, string>()
             {
                 { "$oid", msg.SynapseOId }
-            };            
+            };
 
             dynamic body = new
             {

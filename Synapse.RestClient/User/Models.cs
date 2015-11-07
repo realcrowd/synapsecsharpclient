@@ -23,7 +23,7 @@ namespace Synapse.RestClient.User
         public string RefreshToken { get; set; }
         public DateTime ExpirationUtc { get; set; }
     }
-    
+
     public class CreateUserResponse
     {
         public bool Success { get; set; }
@@ -63,7 +63,7 @@ namespace Synapse.RestClient.User
     public class VerifyKYCInfoRequest
     {
         public SynapseUserOAuth OAuth { get; set; }
-        public string QuestionSetId { get; set; }      
+        public string QuestionSetId { get; set; }
         public VerifyKYCInfoAnswer[] Answers { get; set; }
         public string Fingerprint { get; set; }
     }
@@ -81,7 +81,7 @@ namespace Synapse.RestClient.User
     }
 
 
-    
+
 
     public class AddDocRequest
     {
@@ -129,7 +129,7 @@ namespace Synapse.RestClient.User
     {
         public string Id { get; set; }
         public DateTime CreatedAtUtc { get; set; }
-        public Question[] Questions { get; set; } 
+        public Question[] Questions { get; set; }
     }
 
     public class Question
@@ -144,5 +144,33 @@ namespace Synapse.RestClient.User
         public int Id { get; set; }
         public string Text { get; set; }
     }
+
+    public class UserFilter
+    {
+        public int Page { get; set; }
+        public string Query { get; set; }
+    }
+
+    public class ShowUsersRequest
+    {
+        public UserFilter Filter { get; set; }
+    }
+    public class ShowUsersResponse
+    {
+        public int Page { get; set; }
+        public int PageCount { get; set; }
+        public bool Success { get; set; }
+        public string Message { get; set; }
+        public IReadOnlyCollection<UserRecord> Users { get; set; }
+    }
+
+    public class UserRecord
+    {
+        public string OId { get; set; }
+        public DateTime DateJoinedUtc { get; set; }
+        public string SupplementalId { get; set; }
+        public SynapsePermission Permission { get; set; }
+    }
+
 
 }

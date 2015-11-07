@@ -68,15 +68,15 @@ namespace Synapse.RestClient.User
             var kyc = await this._user.AddKycAsync(this.CreateKycRequest(user.OAuth));
             kyc.ShouldNotBeNull();
             kyc.Success.ShouldBeTrue();
-            kyc.HasKBAQuestions.ShouldBeTrue();            
+            kyc.HasKBAQuestions.ShouldBeTrue();
             kyc.KBAQuestionSet.ShouldNotBeNull();
             kyc.KBAQuestionSet.Questions.Length.ShouldEqual(5);
-            foreach(var q in kyc.KBAQuestionSet.Questions)
+            foreach (var q in kyc.KBAQuestionSet.Questions)
             {
                 q.Id.ShouldBeGreaterThan(0);
                 q.Text.ShouldNotBeEmpty();
                 q.Answers.Length.ShouldEqual(5);
-                foreach(var a in q.Answers)
+                foreach (var a in q.Answers)
                 {
                     a.Id.ShouldBeGreaterThan(0);
                     a.Text.ShouldNotBeEmpty();
@@ -92,10 +92,10 @@ namespace Synapse.RestClient.User
             var kyc = await this._user.AddKycAsync(this.CreateKycRequest(user.OAuth));
             var answ = await this._user.VerifyKYCInfo(new VerifyKYCInfoRequest
             {
-                 Fingerprint = Fingerprint,
-                 OAuth = user.OAuth,
-                 QuestionSetId = kyc.KBAQuestionSet.Id,
-                 Answers = new VerifyKYCInfoAnswer[]
+                Fingerprint = Fingerprint,
+                OAuth = user.OAuth,
+                QuestionSetId = kyc.KBAQuestionSet.Id,
+                Answers = new VerifyKYCInfoAnswer[]
                  {
                      new VerifyKYCInfoAnswer { AnswerId = 5, QuestionId =1 },
                      new VerifyKYCInfoAnswer { AnswerId = 5, QuestionId =2 },
@@ -107,7 +107,7 @@ namespace Synapse.RestClient.User
             });
             answ.ShouldNotBeNull();
             answ.Success.ShouldBeTrue();
-            
+
             //result.Permission.ShouldEqual(SynapsePermission.SendAndReceive);  //TODO: Discuss
         }
 
@@ -128,6 +128,48 @@ namespace Synapse.RestClient.User
             token.OAuth.Key.ShouldNotBeNull();
             token.OAuth.RefreshToken.ShouldNotBeNull();
             token.OAuth.ExpirationUtc.ShouldBeGreaterThan(DateTime.UtcNow);
+        }
+
+        [TestMethod]
+        public async Task ShowExistingUser()
+        {
+            var user = await this._user.CreateUserAsync(this.CreateUserRequest());
+            var show = await this._user.ShowUsersAsync(new ShowUsersRequest
+            {
+                Filter = new UserFilter
+                {
+                    Page = 1,
+                    Query = this.Person.EmailAddress
+                }
+            });
+
+            show.Success.ShouldBeTrue();
+            show.Page.ShouldEqual(1);
+            show.Page.ShouldEqual(1);
+            show.Users.ShouldNotBeNull();
+            show.Users.Count.ShouldEqual(1);
+
+            var found = show.Users.First();
+            found.OId.ShouldEqual(user.SynapseOId);
+            found.Permission.ShouldEqual(user.Permission);
+            found.DateJoinedUtc.ShouldBeGreaterThan(DateTime.UtcNow.AddSeconds(-2)); //TODO: Hacky
+        }
+
+        [TestMethod]
+        public async Task ShowNonExistingUser()
+        {
+            var show = await this._user.ShowUsersAsync(new ShowUsersRequest
+            {
+                Filter = new UserFilter
+                {
+                    Page = 1,
+                    Query = this.Person.EmailAddress
+                }
+            });
+            show.Success.ShouldBeTrue();
+            show.Users.ShouldNotBeNull();
+            show.Users.Count.ShouldEqual(0);
+
         }
     }
 }
