@@ -41,7 +41,7 @@ Helper function implementing https://discuss.synapsepay.com/t/hmac-for-web-hooks
 ```csharp
 HMACSignatureValidator.IsValid(signature, secret, oid, date);
 ```
-## Sample WebAPI ActionAttribute
+This can be used in an ActionFilter to authenticate your requests
 ```csharp
     [AttributeUsage(AttributeTargets.Method)]
     public class ValidateSynapseHMACAttribute : ActionFilterAttribute
