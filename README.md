@@ -37,9 +37,8 @@ var node = factory.CreateNodeApiClient();
 ```
 
 ## Webhook HMAC Verification
-
-```csharp
 Helper function implementing https://discuss.synapsepay.com/t/hmac-for-web-hooks/17
+```csharp
 HMACSignatureValidator.IsValid(signature, secret, oid, date);
 ```
 ## Sample WebAPI ActionAttribute
