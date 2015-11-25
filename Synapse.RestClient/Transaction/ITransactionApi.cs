@@ -112,7 +112,7 @@ namespace Synapse.RestClient.Transaction
 
         public async Task<CancelTransactionResponse> CancelTransactionAsync(CancelTransactionRequest msg)
         {
-            var req = new RestRequest("trans/add", Method.POST);
+            var req = new RestRequest("trans/cancel", Method.POST);
             var _id = new Dictionary<string, string>()
             {
                 { "$oid", msg.TransactionOId }
