@@ -35,3 +35,40 @@ var userApi = factory.CreateUserApiClient();
 var node = factory.CreateNodeApiClient();
 //etc..
 ```
+
+## Webhook HMAC Verification
+Helper function implementing https://discuss.synapsepay.com/t/hmac-for-web-hooks/17
+```csharp
+HMACSignatureValidator.IsValid(signature, secret, oid, date);
+```
+This can be used in an ActionFilter to authenticate your requests
+```csharp
+    [AttributeUsage(AttributeTargets.Method)]
+    public class ValidateSynapseHMACAttribute : ActionFilterAttribute
+    {
+        public override void OnActionExecuting(HttpActionContext actionContext)
+        {
+            var secret = ConfigurationManager.AppSettings["SynapseClientSecret"];
+            var headers = actionContext.ControllerContext.Request.Headers;
+            var values = (IEnumerable<string>)null;
+            if (headers.TryGetValues("X-Synapse-Signature", out values))
+            {
+                var signature = values.First();
+                var request = actionContext.ControllerContext.Request;
+                dynamic data = actionContext.ActionArguments["request"];
+                var oid = Convert.ToString(data._id["$oid"]);
+                var date = Convert.ToString(data.recent_status.date["$date"]);
+
+                if (HMACValidator.IsValid(signature, secret, oid, date))
+                {
+                    base.OnActionExecuting(actionContext);
+                    return;
+                } 
+            }
+            throw new HttpResponseException(System.Net.HttpStatusCode.Forbidden);
+            
+        }
+
+
+    }
+```
