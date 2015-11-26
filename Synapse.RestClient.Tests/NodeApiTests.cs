@@ -49,6 +49,29 @@ namespace Synapse.RestClient
         }
 
         [TestMethod]
+        public async Task InvalidRoutingNumber()
+        {
+            var user = await this._user.CreateUserAsync(this.CreateUserRequest());
+            await this._user.AddKycAsync(this.CreateKycRequest(user.OAuth));
+            await this._user.AddDocAsync(this.CreateAddDocRequest(user.OAuth));
+            var node = await this._node.AddACHNodeAsync(new AddACHNodeRequest
+            {
+                OAuth = user.OAuth,
+                AccountClass = SynapseNodeClass.Checking,
+                AccountNumber = "1234",
+                RoutingNumber = "123456",
+                AccountType = SynapseNodeType.Personal,
+                Fingerprint = Fingerprint,
+                LocalId = "1234",
+                NameOnAccount = "Freddy Krueger Jr.",
+                Nickname = "Freddy's Chase Checking"
+            });
+            node.Success.ShouldBeFalse();
+            node.Permission.ShouldEqual(SynapseNodePermission.None);
+            
+
+        }
+        [TestMethod]
         public async Task VerifiesNode()
         {
             var user = await this._user.CreateUserAsync(this.CreateUserRequest());
@@ -66,6 +89,7 @@ namespace Synapse.RestClient
                 NameOnAccount = "Freddy Krueger Jr.",
                 Nickname = "Freddy's Chase Checking"
             });
+            node.Success.ShouldBeTrue();
             var result = await this._node.VerifyACHNodeAsync(new VerifyACHNodeRequest
             {
                 OAuth = user.OAuth,

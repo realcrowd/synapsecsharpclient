@@ -19,6 +19,7 @@ namespace Synapse.RestClient.Node
     }
     public enum SynapseNodePermission
     {
+        None = 0,
         Credit,
         CreditAndDebit,
         Locked
