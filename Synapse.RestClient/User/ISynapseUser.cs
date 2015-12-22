@@ -132,7 +132,7 @@ namespace Synapse.RestClient.User
                         address_postal_code = msg.PostalCode,
                         address_country_code = msg.CountryCode,
                         document_value = msg.DocumentValue,
-                        document_type = msg.DocumentType.ToString().ToUpper()
+                        document_type = ToString(msg.DocumentType)
                     },
                     fingerprint = msg.Fingerprint
                 }
@@ -420,6 +420,26 @@ namespace Synapse.RestClient.User
             OnAfterRequest(resp.ResponseUri.ToString(), resp.StatusCode, SimpleJson.SerializeObject(body), resp.Content);
         }
 
+        private static string ToString(SynapseDocumentType docType)
+        {
+            if(docType == SynapseDocumentType.SSN)
+            {
+                return "SSN";
+            } else if(docType == SynapseDocumentType.Passport)
+            {
+                return "PASSPORT";
+            } else if(docType == SynapseDocumentType.PersonalIdentification)
+            {
+                return "PERSONAL_IDENTIFICATION";
+            } else if (docType == SynapseDocumentType.DriversLicense)
+            {
+                return "DRIVERS_LICENSE";
+            } else if(docType == SynapseDocumentType.None)
+            {
+                return "NONE";
+            }
+            throw new ArgumentOutOfRangeException("docType", docType, "This value is not supported");
+        }
         private static SynapsePermission ParsePermission(string permission)
         {
             if (permission == "UNVERIFIED") return SynapsePermission.Unverified;

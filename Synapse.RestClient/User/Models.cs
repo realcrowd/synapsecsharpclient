@@ -115,7 +115,10 @@ namespace Synapse.RestClient.User
     public enum SynapseDocumentType
     {
         None = 0,
-        SSN = 1
+        SSN = 1,
+        Passport = 2,
+        PersonalIdentification = 3,
+        DriversLicense = 4
     }
     public enum SynapsePermission
     {
