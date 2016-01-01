@@ -32,7 +32,7 @@ namespace Synapse.RestClient
                 FirstName = this.Person.FirstName,
                 LastName = this.Person.EmailAddress,
                 PhoneNumber = "555-123-1233",
-                IpAddress = "10.1.0.1",
+                IpAddress = IpAddress,
                 LocalId = "LocalId",
                 Fingerprint = Fingerprint
             };

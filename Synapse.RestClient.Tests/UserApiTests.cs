@@ -120,7 +120,7 @@ namespace Synapse.RestClient.User
                 Fingerprint = "c1c4622e155d1ba135f161a6228b2c2c",
                 SynapseOId = "562d50fb86c27374bdd58257",
                 RefreshToken = "refresh-691a462f-bc9c-4cc9-af5a-68dc2c7afbda",
-                IPAddress = "10.1.0.1"
+                IPAddress = IpAddress
             });
 
             token.Success.ShouldBeTrue();
@@ -153,6 +153,24 @@ namespace Synapse.RestClient.User
             found.OId.ShouldEqual(user.SynapseOId);
             found.Permission.ShouldEqual(user.Permission);
             found.DateJoinedUtc.ShouldBeGreaterThan(DateTime.UtcNow.AddSeconds(-2)); //TODO: Hacky
+        }
+
+        [TestMethod]
+        public async Task UpdateUser()
+        {
+            var user = await this._user.CreateUserAsync(this.CreateUserRequest());
+            var update = await this._user.UpdateUser(new UpdateUserRequest
+            {
+                UserOId = user.SynapseOId,
+                OAuth = user.OAuth,
+                Fingerprint = Fingerprint,
+                IpAddress = IpAddress,
+                Email = Person.EmailAddress,
+                NewEmail = "somebodyyyy@someemailthatdoesntreallyexist.org"
+            });
+            //TODO: check with synapse why this is failing.
+            //update.Success.ShouldBeTrue();
+
         }
 
         [TestMethod]

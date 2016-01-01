@@ -14,6 +14,8 @@ namespace Synapse.RestClient.User
         Task<CreateUserResponse> CreateUserAsync(CreateUserRequest req);
         Task<RefreshTokenResponse> RefreshToken(RefreshTokenRequest req);
 
+        Task<UpdateUserResponse> UpdateUser(UpdateUserRequest req);
+
         Task<AddKycResponse> AddKycAsync(AddKycRequest req);
         Task<AddDocResponse> AddDocAsync(AddDocRequest req);
         Task<VerifyKYCInfoResponse> VerifyKYCInfo(VerifyKYCInfoRequest req);
@@ -353,6 +355,77 @@ namespace Synapse.RestClient.User
                     Success = false
                 };
             };
+
+        }
+
+        public async Task<UpdateUserResponse> UpdateUser(UpdateUserRequest msg)
+        {
+            var req = new RestRequest("user/signin", Method.POST);
+
+            dynamic id = new Dictionary<string, object>() { { "$oid", msg.UserOId } };
+            var update = new Dictionary<string, object>();
+            if(!String.IsNullOrEmpty(msg.NewPhoneNumber))
+            {
+                update.Add("phone_number", msg.NewPhoneNumber);
+            }
+            if(!String.IsNullOrEmpty(msg.NewEmail))
+            {
+                update.Add("login", new
+                {
+                    email = msg.NewEmail
+                });
+            }
+            if(!String.IsNullOrEmpty(msg.NewLegalName))
+            {
+                update.Add("legal_name", msg.NewLegalName);
+            }
+            if(!String.IsNullOrEmpty(msg.RemovePhoneNumber))
+            {
+                update.Add("remove_phone_number", msg.RemovePhoneNumber);
+            }
+            var body = new
+            {
+                client = new
+                {
+                    client_id = _creds.ClientId,
+                    client_secret = _creds.ClientSecret
+                },
+                login = new 
+                {
+                    email = msg.Email
+                },
+                user = new
+                {
+                    _id = id,
+                    fingerprint = msg.Fingerprint,
+                    ip = msg.IpAddress,
+                    update = update
+                },
+
+            };
+            req.AddJsonBody(body);
+
+            var resp = await this._api.ExecuteTaskAsync(req);
+            RaiseOnAfterRequest(body, req, resp);
+            dynamic data = SimpleJson.DeserializeObject(resp.Content);
+
+            if (resp.IsHttpOk() && data.success)
+            {
+                return new UpdateUserResponse
+                {
+                    Success = true,
+                    Permission = ParsePermission(data.user.permission),
+                    Message = ApiHelper.TryGetMessage(data)
+                };
+            }
+            else
+            {
+                return new UpdateUserResponse
+                {
+                    Success = false,
+                    Message = ApiHelper.TryGetError(data)
+                };
+            }
 
         }
 

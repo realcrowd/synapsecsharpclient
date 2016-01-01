@@ -17,6 +17,7 @@ namespace Synapse.RestClient
         protected SynapseRestClientFactory Factory { get; set; }
 
         protected const string Fingerprint = "suasusau21324redakufejfjsf";
+        public const string IpAddress = "10.1.0.1";
         [TestInitialize]
         public virtual void Init()
         {

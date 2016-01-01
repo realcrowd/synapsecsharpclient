@@ -175,5 +175,24 @@ namespace Synapse.RestClient.User
         public SynapsePermission Permission { get; set; }
     }
 
+    public class UpdateUserRequest
+    {
+        public string UserOId { get; set; }
+        public string Email { get; set; }
+        public SynapseUserOAuth OAuth { get; set; }
+        public string NewPhoneNumber { get; set; }
+        public string RemovePhoneNumber { get; set; }
+        public string NewLegalName { get; set; }
+        public string NewEmail { get; set; }
+        public string Fingerprint { get; set; }
+        public string IpAddress { get; set; }
+    }
+    public class UpdateUserResponse
+    {
+        public bool Success { get; set; }
+        public SynapsePermission Permission { get; set; }
+        public string Message { get; set; }
+    }
+
 
 }
