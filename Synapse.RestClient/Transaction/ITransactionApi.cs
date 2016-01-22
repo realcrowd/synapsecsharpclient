@@ -67,7 +67,6 @@ namespace Synapse.RestClient.Transaction
                     {
                         supp_id = msg.LocalId,
                         note = msg.Note,
-                        webhook = msg.WebhookUrl,
                         ip = msg.IpAddress,
                         process_on = msg.ProcessOn
                     }
