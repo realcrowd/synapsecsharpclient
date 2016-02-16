@@ -189,5 +189,6 @@ namespace Synapse.RestClient.User
             show.Users.Count.ShouldEqual(0);
 
         }
+
     }
 }

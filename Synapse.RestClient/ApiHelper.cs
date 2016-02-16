@@ -14,6 +14,7 @@ namespace Synapse.RestClient
             return r.StatusCode == System.Net.HttpStatusCode.OK;
         }
 
+        [Obsolete("This method does not work, as synapse is not sending us the timestamp in UTC or epoch. IT's some weird shit.")]
         public static DateTime UnixTimestampInSecondsToUtc(long timestamp)
         {
             var dt = new DateTime(1970, 1, 1, 0, 0, 0, 0, System.DateTimeKind.Utc);
