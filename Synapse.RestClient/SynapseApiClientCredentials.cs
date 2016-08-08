@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Synapse.RestClient
 {
-    public class SynapseApiCredentials
+    public class SynapseApiClientCredentials
     {
         public string ClientId { get; set; }
         public string ClientSecret { get; set; }

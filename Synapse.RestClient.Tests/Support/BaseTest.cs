@@ -8,21 +8,21 @@ using System.Configuration;
 
 namespace Synapse.RestClient
 {
-    using User;
     [TestClass]
     public abstract class BaseTest
     {
         protected string BaseUrl;
-        protected SynapseApiCredentials Credentials;
+        protected SynapseApiClientCredentials Credentials;
         protected SynapseRestClientFactory Factory { get; set; }
 
         protected const string Fingerprint = "suasusau21324redakufejfjsf";
         public const string IpAddress = "10.1.0.1";
+
         [TestInitialize]
         public virtual void Init()
         {
             this.BaseUrl = ConfigurationManager.AppSettings["SynapseBaseUrl"];
-            this.Credentials = new SynapseApiCredentials
+            this.Credentials = new SynapseApiClientCredentials
             {
                 ClientId = ConfigurationManager.AppSettings["SynapseClientId"],
                 ClientSecret = ConfigurationManager.AppSettings["SynapseClientSecret"]

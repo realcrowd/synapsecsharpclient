@@ -24,62 +24,98 @@ namespace Synapse.RestClient
             return Person.CreateRandom(ssn);
         }
 
+        protected SynapseApiUserCredentials CreateSynapseApiUser()
+        {
+            return new SynapseApiUserCredentials()
+            {
+                Fingerprint = Fingerprint,
+                IpAddressOfUser = IpAddress
+            };
+        }
+
         protected CreateUserRequest CreateUserRequest()
         {
             return new CreateUserRequest
             {
-                EmailAddress = this.Person.EmailAddress,
-                FirstName = this.Person.FirstName,
-                LastName = this.Person.EmailAddress,
-                PhoneNumber = "555-123-1233",
-                IpAddress = IpAddress,
-                LocalId = "LocalId",
-                Fingerprint = Fingerprint
+                Logins = new CreateUserRequestLogin[]
+                {
+                    new CreateUserRequestLogin {
+                        Email = this.Person.EmailAddress,
+                        ReadOnly = true
+                    }
+                },
+                PhoneNumbers = new string[] { "555-123-1233" },
+                LegalNames = new string[] { this.Person.FirstName },
+                Extra = new CreateUserRequestExtra
+                {
+                    SuppId = "LocalId",
+                    CipTag = 1
+                },
             };
         }
 
-        protected AddKycRequest CreateKycRequest(SynapseUserOAuth oauth)
+        protected AddDocumentsRequest CreateAddDocumentsRequest()
         {
-            return new AddKycRequest
+            return new AddDocumentsRequest()
             {
-                OAuth = oauth,
-                Address1 = "1428 Elm Street",
-                Address2 = "#4",
-                City = "Brooklyn",
-                State = "New York",
-                PostalCode = "11215",
-                CountryCode = "US",
-                DateOfBirth = DateTime.Parse("10/19/1979").Date,
-                DocumentType = SynapseDocumentType.SSN,
-                DocumentValue = this.Person.DocumentValue,
-                Fingerprint = Fingerprint,
-                FirstName = this.Person.FirstName,
-                LastName = this.Person.LastName
+                Documents = new AddDocumentsRequestDocument[]
+                {
+                    new AddDocumentsRequestDocument
+                    {
+                        Email = this.Person.EmailAddress,
+                        PhoneNumber = "555-123-1233",
+                        Ip = IpAddress,
+                        Name = string.Format("{0} {0}", this.Person.FirstName, this.Person.LastName),
+                        Alias = this.Person.FirstName,
+                        EntityType = SynapseEntityType.Male,
+                        EntityScope = SynapseEntityScope.ArtsAndEntertainment,
+                        Day = DateTime.UtcNow.Day,
+                        Month = DateTime.UtcNow.Month,
+                        Year = DateTime.UtcNow.Year,
+                        AddressStreet = "1428 Elm Street #4",
+                        AddressCity = "Brooklyn",
+                        AddressSubdivision = "NY",
+                        AddressPostalCode = "11215",
+                        AddressCountryCode = "US",
+                        VirtualDocs = new AddDocumentsRequestVirtualDocumentSubmission[]
+                        {
+                            new AddDocumentsRequestVirtualDocumentSubmission()
+                            {
+                                DocumentType = SynapseVirtualDocumentType.SSN,
+                                DocumentValue = this.Person.DocumentValue
+                            }
+                        },
+                        PhysicalDocs = new AddDocumentsRequestPhysicalDocumentSubmission[]
+                        {
+                            new AddDocumentsRequestPhysicalDocumentSubmission()
+                            {
+                                DocumentType = SynapsePhysicalDocumentType.GovtId,
+                                DocumentValue = GetTextResource("Base64Attachment.txt")
+                                //DocumentValue = "data:text/csv;base64,SUQsTmFtZSxUb3RhbCAoaW4gJCksRmVlIChpbiAkKSxOb3RlLFRyYW5zYWN0aW9uIFR5cGUsRGF0ZSxTdGF0dXMNCjUxMTksW0RlbW9dIEJlbHogRW50ZXJwcmlzZXMsLTAuMTAsMC4wMCwsQmFuayBBY2NvdW50LDE0MzMxNjMwNTEsU2V0dGxlZA0KNTExOCxbRGVtb10gQmVseiBFbnRlcnByaXNlcywtMS4wMCwwLjAwLCxCYW5rIEFjY291bnQsMTQzMzE2MjkxOSxTZXR0bGVkDQo1MTE3LFtEZW1vXSBCZWx6IEVudGVycHJpc2VzLC0xLjAwLDAuMDAsLEJhbmsgQWNjb3VudCwxNDMzMTYyODI4LFNldHRsZWQNCjUxMTYsW0RlbW9dIEJlbHogRW50ZXJwcmlzZXMsLTEuMDAsMC4wMCwsQmFuayBBY2NvdW50LDE0MzMxNjI2MzQsU2V0dGxlZA0KNTExNSxbRGVtb10gQmVseiBFbnRlcnByaXNlcywtMS4wMCwwLjAwLCxCYW5rIEFjY291bnQsMTQzMzE2MjQ5OCxTZXR0bGVkDQo0ODk1LFtEZW1vXSBMRURJQyBBY2NvdW50LC03LjAwLDAuMDAsLEJhbmsgQWNjb3VudCwxNDMyMjUwNTYyLFNldHRsZWQNCjQ4MTIsS2FyZW4gUGF1bCwtMC4xMCwwLjAwLCxCYW5rIEFjY291bnQsMTQzMTk5NDAzNixTZXR0bGVkDQo0NzgwLFNhbmthZXQgUGF0aGFrLC0wLjEwLDAuMDAsLEJhbmsgQWNjb3VudCwxNDMxODQ5NDgxLFNldHRsZWQNCjQzMTUsU2Fua2FldCBQYXRoYWssLTAuMTAsMC4wMCwsQmFuayBBY2NvdW50LDE0Mjk3NzU5MzcsU2V0dGxlZA0KNDMxNCxTYW5rYWV0IFBhdGhhaywtMC4xMCwwLjAwLCxCYW5rIEFjY291bnQsMTQyOTc3NTQzNCxTZXR0bGVkDQo0MzEzLFNhbmthZXQgUGF0aGFrLC0wLjEwLDAuMDAsLEJhbmsgQWNjb3VudCwxNDI5Nzc1MzY0LFNldHRsZWQNCjQzMTIsU2Fua2FldCBQYXRoYWssLTAuMTAsMC4wMCwsQmFuayBBY2NvdW50LDE0Mjk3NzUyNTAsU2V0dGxlZA0KNDMxMSxTYW5rYWV0IFBhdGhhaywtMC4xMCwwLjAwLCxCYW5rIEFjY291bnQsMTQyOTc3NTAxMyxTZXR0bGVkDQo0MjM1LFtEZW1vXSBCZWx6IEVudGVycHJpc2VzLC0wLjEwLDAuMDAsLEJhbmsgQWNjb3VudCwxNDI5MzMxODA2LFNldHRsZWQNCjQxMzYsU2Fua2FldCBQYXRoYWssLTAuMTAsMC4wMCwsQmFuayBBY2NvdW50LDE0Mjg4OTA4NjMsU2V0dGxlZA0KNDAzMCxTYW5rYWV0IFBhdGhhaywtMC4xMCwwLjAwLCxCYW5rIEFjY291bnQsMTQyODIxNTM5NixTZXR0bGVkDQo0MDE0LFtEZW1vXSBCZWx6IEVudGVycHJpc2VzLC0wLjEwLDAuMDAsLEJhbmsgQWNjb3VudCwxNDI4MTI1MzgwLENhbmNsZWQNCjM4MzIsU2Fua2FldCBQYXRoYWssLTAuMTAsMC4wMCwsQmFuayBBY2NvdW50LDE0MjcxMDc0NzAsU2V0dGxlZA0KMzgyNixTYW5rYWV0IFBhdGhhaywtMC4xMCwwLjAwLCxCYW5rIEFjY291bnQsMTQyNzAzNTM5MixTZXR0bGVkDQozODI1LFNhbmthZXQgUGF0aGFrLC0wLjEwLDAuMDAsLEJhbmsgQWNjb3VudCwxNDI3MDMyOTM3LFNldHRsZWQNCg=="
+                            }
+                        }
+                    }
+                }
             };
         }
 
-        protected AddDocRequest CreateAddDocRequest(SynapseUserOAuth oauth)
+        protected AddACHNodeRequest CreateAddACHNodeRequest()
         {
-            return new AddDocRequest
+            return new AddACHNodeRequest()
             {
-                OAuth = oauth,
-                Attachment = GetTextResource("Base64Attachment.txt"),
-                Fingerprint = Fingerprint
-            };
-        }
-        protected AddACHNodeRequest CreateAddACHNodeRequest(SynapseUserOAuth oauth)
-        {
-            return new AddACHNodeRequest
-            {
-                OAuth = oauth,
-                AccountClass = SynapseNodeClass.Checking,
-                AccountNumber = "1234",
-                RoutingNumber = "021000021", //Chase NYC
-                AccountType = SynapseNodeType.Personal,
-                Fingerprint = Fingerprint,
-                LocalId = "1234",
-                NameOnAccount = "Freddy Krueger Jr.",
-                Nickname = "Freddy's Chase Checking"
+                Info = new AddACHNodeRequestInfo()
+                {
+                    Nickname = "Freddy's Chase Checking",
+                    //NameOnAccount = "Freddy Krueger Jr.",
+                    AccountNum = "12345678",
+                    RoutingNum = "021000021", //Chase NYC
+                    Type = SynapseNodeType.Personal,
+                    Class = SynapseNodeClass.Checking,
+                },
+                Extra = new AddACHNodeRequestExtra()
+                {
+                    SuppId = "1234"
+                }
             };
         }
     }

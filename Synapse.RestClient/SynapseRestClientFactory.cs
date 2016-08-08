@@ -11,9 +11,10 @@ namespace Synapse.RestClient
     using Node;
     public class SynapseRestClientFactory
     {
-        private SynapseApiCredentials _creds;
+        private SynapseApiClientCredentials _creds;
         private string _baseUrl;
-        public SynapseRestClientFactory(SynapseApiCredentials credentials, string baseUrl)
+
+        public SynapseRestClientFactory(SynapseApiClientCredentials credentials, string baseUrl)
         {
             this._creds = credentials;
             this._baseUrl = baseUrl;
