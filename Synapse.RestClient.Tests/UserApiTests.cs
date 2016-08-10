@@ -72,7 +72,7 @@ namespace Synapse.RestClient.User
             user.Documents[0].PhysicalDocs.ShouldNotBeEmpty();
             user.Documents[0].VirtualDocs.ShouldNotBeEmpty();
             user.Documents[0].SocialDocs.Length.ShouldEqual(2);
-            //user.Permission.ShouldEqual(SynapsePermission.ReceiveOnly); //TODO: Discuss
+            user.Permission.ShouldEqual(SynapsePermission.SendAndReceive);
             user.HasKBAQuestions.ShouldBeFalse();
         }
 
