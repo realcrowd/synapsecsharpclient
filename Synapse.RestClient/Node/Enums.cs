@@ -8,36 +8,70 @@ namespace Synapse.RestClient.Node
 {
     public enum SynapseNodeType
     {
-        Business,
-        Personal        
+        SynapseUS,
+        ReserveUS,
+        ACHUS,
+        WireUS,
+        WireInt,
+        IOU,
+        SynapseIND,
+        SynapseNP,
+        EFTIND,
+        EFTNP
     }
 
     internal class SynapseNodeTypeEnumConverter : EnumConverter<SynapseNodeType>
     {
         protected Dictionary<SynapseNodeType, string> _lookup = new Dictionary<SynapseNodeType, string>()
         {
-            { SynapseNodeType.Business, "BUSINESS" },
-            { SynapseNodeType.Personal, "PERSONAL" },
+            { SynapseNodeType.SynapseUS, "SYNAPSE-US" },
+            { SynapseNodeType.ReserveUS, "RESERVE-US" },
+            { SynapseNodeType.ACHUS, "ACH-US" },
+            { SynapseNodeType.WireUS, "WIRE-US" },
+            { SynapseNodeType.WireInt, "WIRE-INT" },
+            { SynapseNodeType.IOU, "IOU" },
+            { SynapseNodeType.SynapseIND, "SYNAPSE-IND" },
+            { SynapseNodeType.SynapseNP, "SYNAPSE-NP" },
+            { SynapseNodeType.EFTIND, "EFT-IND" },
+            { SynapseNodeType.EFTNP, "EFT-NP" }
         };
 
         protected override Dictionary<SynapseNodeType, string> Lookup { get { return _lookup; } }
     }
 
-    public enum SynapseNodeClass
+
+    public enum SynapseACHNodeType
+    {
+        Business,
+        Personal        
+    }
+
+    internal class SynapseACHNodeTypeEnumConverter : EnumConverter<SynapseACHNodeType>
+    {
+        protected Dictionary<SynapseACHNodeType, string> _lookup = new Dictionary<SynapseACHNodeType, string>()
+        {
+            { SynapseACHNodeType.Business, "BUSINESS" },
+            { SynapseACHNodeType.Personal, "PERSONAL" },
+        };
+
+        protected override Dictionary<SynapseACHNodeType, string> Lookup { get { return _lookup; } }
+    }
+
+    public enum SynapseACHNodeClass
     {
         Savings,
         Checking
     }
 
-    internal class SynapseNodeClassEnumConverter : EnumConverter<SynapseNodeClass>
+    internal class SynapseACHNodeClassEnumConverter : EnumConverter<SynapseACHNodeClass>
     {
-        protected Dictionary<SynapseNodeClass, string> _lookup = new Dictionary<SynapseNodeClass, string>()
+        protected Dictionary<SynapseACHNodeClass, string> _lookup = new Dictionary<SynapseACHNodeClass, string>()
         {
-            { SynapseNodeClass.Savings, "SAVINGS" },
-            { SynapseNodeClass.Checking, "CHECKING" },
+            { SynapseACHNodeClass.Savings, "SAVINGS" },
+            { SynapseACHNodeClass.Checking, "CHECKING" },
         };
 
-        protected override Dictionary<SynapseNodeClass, string> Lookup { get { return _lookup; } }
+        protected override Dictionary<SynapseACHNodeClass, string> Lookup { get { return _lookup; } }
     }
 
     public enum SynapseNodePermission

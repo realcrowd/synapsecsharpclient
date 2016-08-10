@@ -44,7 +44,7 @@ namespace Synapse.RestClient
 
             this._apiUser = apiUser;
             this.Sender = user;
-            this.SenderNode = node;
+            this.SenderNode = (ACHNodeResponse)node;
 
             this._api = Factory.CreateTransactionClient();
         }

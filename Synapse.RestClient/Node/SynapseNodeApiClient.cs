@@ -15,9 +15,13 @@ namespace Synapse.RestClient.Node
 
         Task<NodesResponse> AddACHNodeAsync(SynapseApiUserCredentials apiUser, string userId, AddACHNodeRequest msg);
 
-        Task<ACHNodeResponse> GetNodeAsync(SynapseApiUserCredentials apiUser, string userId, string nodeId);
+        Task<NodesResponse> AddACHNodeWithLoginAsync(SynapseApiUserCredentials apiUser, string userId, AddACHNodeWithLoginRequest msg);
 
-        Task<ACHNodeResponse> VerifyNodeAsync(SynapseApiUserCredentials apiUser, string userId, string nodeId, VerifyNodeRequest msg);
+        Task<NodesResponse> AddWireUSNodeAsync(SynapseApiUserCredentials apiUser, string userId, AddWireUSNodeRequest msg);
+
+        Task<NodeResponse> GetNodeAsync(SynapseApiUserCredentials apiUser, string userId, string nodeId);
+
+        Task<NodeResponse> VerifyNodeAsync(SynapseApiUserCredentials apiUser, string userId, string nodeId, VerifyNodeRequest msg);
 
         Task<SynapseApiErrorResponse> DeleteNodeAsync(SynapseApiUserCredentials apiUser, string userId, string nodeId);
 
@@ -64,24 +68,42 @@ namespace Synapse.RestClient.Node
             var resp = await ExecuteRequestAsync(apiUser, body, req);
             return ParseResponse<NodesResponse>(resp);
         }
+
+        public async Task<NodesResponse> AddACHNodeWithLoginAsync(SynapseApiUserCredentials apiUser, string userId, AddACHNodeWithLoginRequest msg)
+        {
+            var req = new RestRequest(String.Format("users/{0}/nodes", HttpUtility.UrlPathEncode(userId)), Method.POST);
+            var body = JsonConvert.SerializeObject(msg);
+
+            var resp = await ExecuteRequestAsync(apiUser, body, req);
+            return ParseResponse<NodesResponse>(resp);
+        }
+
+        public async Task<NodesResponse> AddWireUSNodeAsync(SynapseApiUserCredentials apiUser, string userId, AddWireUSNodeRequest msg)
+        {
+            var req = new RestRequest(String.Format("users/{0}/nodes", HttpUtility.UrlPathEncode(userId)), Method.POST);
+            var body = JsonConvert.SerializeObject(msg);
+
+            var resp = await ExecuteRequestAsync(apiUser, body, req);
+            return ParseResponse<NodesResponse>(resp);
+        }
         
-        public async Task<ACHNodeResponse> GetNodeAsync(SynapseApiUserCredentials apiUser, string userId, string nodeId)
+        public async Task<NodeResponse> GetNodeAsync(SynapseApiUserCredentials apiUser, string userId, string nodeId)
         {
             var req = new RestRequest(String.Format("users/{0}/nodes/{1}", 
                 HttpUtility.UrlPathEncode(userId), HttpUtility.UrlPathEncode(nodeId)), Method.GET);
 
             var resp = await ExecuteRequestAsync(apiUser, null, req);
-            return ParseResponse<ACHNodeResponse>(resp);
+            return ParseResponse<NodeResponse>(resp);
         }
 
-        public async Task<ACHNodeResponse> VerifyNodeAsync(SynapseApiUserCredentials apiUser, string userId, string nodeId, VerifyNodeRequest msg)
+        public async Task<NodeResponse> VerifyNodeAsync(SynapseApiUserCredentials apiUser, string userId, string nodeId, VerifyNodeRequest msg)
         {
             var req = new RestRequest(String.Format("users/{0}/nodes/{1}", 
                 HttpUtility.UrlPathEncode(userId), HttpUtility.UrlPathEncode(nodeId)), Method.PATCH);
             var body = JsonConvert.SerializeObject(msg);
 
             var resp = await ExecuteRequestAsync(apiUser, body, req);
-            return ParseResponse<ACHNodeResponse>(resp);
+            return ParseResponse<NodeResponse>(resp);
         }
 
         public async Task<SynapseApiErrorResponse> DeleteNodeAsync(SynapseApiUserCredentials apiUser, string userId, string nodeId)

@@ -109,8 +109,8 @@ namespace Synapse.RestClient
                     //NameOnAccount = "Freddy Krueger Jr.",
                     AccountNum = "12345678",
                     RoutingNum = "021000021", //Chase NYC
-                    Type = SynapseNodeType.Personal,
-                    Class = SynapseNodeClass.Checking,
+                    Type = SynapseACHNodeType.Personal,
+                    Class = SynapseACHNodeClass.Checking,
                 },
                 Extra = new AddACHNodeRequestExtra()
                 {

@@ -49,6 +49,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Node\Models\AddACHNodeWithLoginRequest.cs" />
+    <Compile Include="Node\Models\AddWireUSNodeRequest.cs" />
+    <Compile Include="Node\Models\NodeResponse.cs" />
+    <Compile Include="Node\Models\NodeResponseConverter.cs" />
+    <Compile Include="Node\Models\NodesResponse.cs" />
+    <Compile Include="Node\Models\WireUSNodeResponse.cs" />
     <Compile Include="SynapseApiErrorResponse.cs" />
     <Compile Include="SynapseApiUserCredentials.cs" />
     <Compile Include="SynapseBaseApiClient.cs" />

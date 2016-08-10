@@ -202,7 +202,7 @@ namespace Synapse.RestClient.User
             var found = results.Users.First();
             found.Id.ShouldEqual(user.Id);
             found.Permission.ShouldEqual(user.Permission);
-            found.Extra.DateJoined.ShouldBeGreaterThan(DateTime.UtcNow.AddSeconds(-2)); //TODO: Hacky
+            found.Extra.DateJoined.ShouldBeGreaterThan(DateTime.UtcNow.AddSeconds(-60)); //TODO: Hacky
         }
 
         [TestMethod]

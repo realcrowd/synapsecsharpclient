@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Synapse.RestClient.Node
 {
-    public class SearchNodesResponse
+    public class NodesResponse
     {
         [JsonProperty("error_code")]
         public string ErrorCode { get; set; }
@@ -15,19 +15,10 @@ namespace Synapse.RestClient.Node
         [JsonProperty("http_code")]
         public string HttpCode { get; set; }
 
-        [JsonProperty("page")]
-        public int Page { get; set; }
-
-        [JsonProperty("page_count")]
-        public int PageCount { get; set; }
-
-        [JsonProperty("success")]
-        public bool Success { get; set; }
-
         [JsonProperty("nodes")]
         public NodeResponse[] Nodes { get; set; }
 
-        [JsonProperty("node_count")]
-        public int NodeCount { get; set; }
+        [JsonProperty("success")]
+        public bool Success { get; set; }
     }
 }
