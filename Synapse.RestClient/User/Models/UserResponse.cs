@@ -30,7 +30,7 @@ namespace Synapse.RestClient.User
 
         public UserResponseLogin[] Logins { get; set; }
 
-        [JsonConverter(typeof(SynapsePermissionEnumConverter))]
+        [JsonConverter(typeof(SynapsePermissionEnumConverter), SynapsePermission.Unknown)]
         public SynapsePermission Permission { get; set; }
 
         public string[] PhoneNumbers { get; set; }
@@ -103,13 +103,13 @@ namespace Synapse.RestClient.User
 
     public class UserResponsePhysicalDocument : UserResponseAbstractDocument
     {
-        [JsonConverter(typeof(SynapsePhysicalDocumentTypeEnumConverter))]
+        [JsonConverter(typeof(SynapsePhysicalDocumentTypeEnumConverter), SynapsePhysicalDocumentType.Unknown)]
         public SynapsePhysicalDocumentType DocumentType { get; set; }
     }
 
     public class UserResponseVirtualDocument : UserResponseAbstractDocument
     {
-        [JsonConverter(typeof(SynapseVirtualDocumentTypeEnumConverter))]
+        [JsonConverter(typeof(SynapseVirtualDocumentTypeEnumConverter), SynapseVirtualDocumentType.Unknown)]
         public SynapseVirtualDocumentType DocumentType { get; set; }
 
         [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
@@ -146,7 +146,7 @@ namespace Synapse.RestClient.User
 
     public class UserResponseSocialDocument : UserResponseAbstractDocument
     {
-        [JsonConverter(typeof(SynapseSocialDocumentTypeEnumConverter))]
+        [JsonConverter(typeof(SynapseSocialDocumentTypeEnumConverter), SynapseSocialDocumentType.Unknown)]
         public SynapseSocialDocumentType DocumentType { get; set; }
     }
 

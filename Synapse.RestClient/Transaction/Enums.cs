@@ -7,23 +7,6 @@ using System.Threading.Tasks;
 
 namespace Synapse.RestClient.Transaction
 {
-    public enum SynapseNodeTransactionType
-    {
-        ACHUS,
-        SYNAPSEUS
-    }
-
-    internal class SynapseNodeTransactionTypeEnumConverter : EnumConverter<SynapseNodeTransactionType>
-    {
-        protected Dictionary<SynapseNodeTransactionType, string> _lookup = new Dictionary<SynapseNodeTransactionType, string>()
-        {
-            { SynapseNodeTransactionType.ACHUS, "ACH-US" },
-            { SynapseNodeTransactionType.SYNAPSEUS, "SYNAPSE-US" },
-        };
-
-        protected override Dictionary<SynapseNodeTransactionType, string> Lookup { get { return _lookup; } }
-    }
-
     public enum SynapseTransactionStatusCode
     {
         QueuedBySynapse = -1,

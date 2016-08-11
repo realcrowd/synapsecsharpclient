@@ -9,7 +9,7 @@ namespace Synapse.RestClient.Node
 {
     public class AddWireUSNodeRequest
     {
-        [JsonConverter(typeof(SynapseNodeTypeEnumConverter))]
+        [JsonConverter(typeof(SynapseNodeTypeEnumConverter), SynapseNodeType.Unknown)]
         public SynapseNodeType Type => SynapseNodeType.WireUS;
 
         public AddWireUSNodeRequestInfo Info { get; set; }

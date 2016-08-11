@@ -8,6 +8,7 @@ namespace Synapse.RestClient.User
 {
     public enum SynapsePermission
     {
+        Unknown,
         Unverified,
         SendAndReceive,
         ReceiveOnly,
@@ -25,10 +26,14 @@ namespace Synapse.RestClient.User
         };
 
         protected override Dictionary<SynapsePermission, string> Lookup { get { return _lookup; } }
+
+        public SynapsePermissionEnumConverter() : base() { }
+        public SynapsePermissionEnumConverter(object notFoundValue) : base(notFoundValue) {}
     }
 
     public enum SynapsePhysicalDocumentType
     {
+        Unknown,
         GovtId,
         Selfie,
         ProofOfAddress,
@@ -76,10 +81,14 @@ namespace Synapse.RestClient.User
         };
 
         protected override Dictionary<SynapsePhysicalDocumentType, string> Lookup { get { return _lookup; } }
+
+        public SynapsePhysicalDocumentTypeEnumConverter() : base() { }
+        public SynapsePhysicalDocumentTypeEnumConverter(object notFoundValue) : base(notFoundValue) {}
     }
 
     public enum SynapseVirtualDocumentType
     {
+        Unknown,
         SSN,
         Passport,
         DriversLicense,
@@ -101,10 +110,14 @@ namespace Synapse.RestClient.User
         };
 
         protected override Dictionary<SynapseVirtualDocumentType, string> Lookup { get { return _lookup; } }
+
+        public SynapseVirtualDocumentTypeEnumConverter() : base() { }
+        public SynapseVirtualDocumentTypeEnumConverter(object notFoundValue) : base(notFoundValue) {}
     }
 
     public enum SynapseSocialDocumentType
     {
+        Unknown,
         Facebook,
         LinkedIn,
         Twitter,
@@ -128,10 +141,14 @@ namespace Synapse.RestClient.User
         };
 
         protected override Dictionary<SynapseSocialDocumentType, string> Lookup { get { return _lookup; } }
+
+        public SynapseSocialDocumentTypeEnumConverter() : base() { }
+        public SynapseSocialDocumentTypeEnumConverter(object notFoundValue) : base(notFoundValue) {}
     }
 
     public enum SynapseEntityType
     {
+        Unknown,
         Male,
         Female,
         Other,
@@ -161,10 +178,14 @@ namespace Synapse.RestClient.User
         };
 
         protected override Dictionary<SynapseEntityType, string> Lookup { get { return _lookup; } }
+
+        public SynapseEntityTypeEnumConverter() : base() { }
+        public SynapseEntityTypeEnumConverter(object notFoundValue) : base(notFoundValue) {}
     }
 
     public enum SynapseEntityScope
     {
+        Unknown,
         NotKnown,
         Airport,
         ArtsAndEntertainment,
@@ -330,5 +351,8 @@ namespace Synapse.RestClient.User
         };
 
         protected override Dictionary<SynapseEntityScope, string> Lookup { get { return _lookup; } }
+
+        public SynapseEntityScopeEnumConverter() : base() { }
+        public SynapseEntityScopeEnumConverter(object notFoundValue) : base(notFoundValue) { }
     }
 }

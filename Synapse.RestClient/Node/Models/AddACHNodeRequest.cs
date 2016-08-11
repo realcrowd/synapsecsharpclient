@@ -9,7 +9,7 @@ namespace Synapse.RestClient.Node
 {
     public class AddACHNodeRequest
     {
-        [JsonConverter(typeof(SynapseNodeTypeEnumConverter))]
+        [JsonConverter(typeof(SynapseNodeTypeEnumConverter), SynapseNodeType.Unknown)]
         public SynapseNodeType Type => SynapseNodeType.ACHUS;
 
         public AddACHNodeRequestInfo Info { get; set; }
@@ -26,10 +26,10 @@ namespace Synapse.RestClient.Node
 
         public string RoutingNum { get; set; }
 
-        [JsonConverter(typeof(SynapseACHNodeTypeEnumConverter))]
+        [JsonConverter(typeof(SynapseACHNodeTypeEnumConverter), SynapseACHNodeType.Unknown)]
         public SynapseACHNodeType Type { get; set; }
 
-        [JsonConverter(typeof(SynapseACHNodeClassEnumConverter))]
+        [JsonConverter(typeof(SynapseACHNodeClassEnumConverter), SynapseACHNodeClass.Unknown)]
         public SynapseACHNodeClass Class { get; set; }
     }
 

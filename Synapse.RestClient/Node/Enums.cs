@@ -8,6 +8,7 @@ namespace Synapse.RestClient.Node
 {
     public enum SynapseNodeType
     {
+        Unknown,
         SynapseUS,
         ReserveUS,
         ACHUS,
@@ -37,11 +38,15 @@ namespace Synapse.RestClient.Node
         };
 
         protected override Dictionary<SynapseNodeType, string> Lookup { get { return _lookup; } }
+
+        public SynapseNodeTypeEnumConverter() : base() { }
+        public SynapseNodeTypeEnumConverter(object notFoundValue) : base(notFoundValue) { }
     }
 
 
     public enum SynapseACHNodeType
     {
+        Unknown,
         Business,
         Personal        
     }
@@ -55,10 +60,14 @@ namespace Synapse.RestClient.Node
         };
 
         protected override Dictionary<SynapseACHNodeType, string> Lookup { get { return _lookup; } }
+
+        public SynapseACHNodeTypeEnumConverter() : base() { }
+        public SynapseACHNodeTypeEnumConverter(object notFoundValue) : base(notFoundValue) { }
     }
 
     public enum SynapseACHNodeClass
     {
+        Unknown,
         Savings,
         Checking
     }
@@ -72,10 +81,14 @@ namespace Synapse.RestClient.Node
         };
 
         protected override Dictionary<SynapseACHNodeClass, string> Lookup { get { return _lookup; } }
+
+        public SynapseACHNodeClassEnumConverter() : base() { }
+        public SynapseACHNodeClassEnumConverter(object notFoundValue) : base(notFoundValue) { }
     }
 
     public enum SynapseNodePermission
     {
+        Unknown,
         Credit,
         CreditAndDebit,
         Locked
@@ -91,5 +104,8 @@ namespace Synapse.RestClient.Node
         };
 
         protected override Dictionary<SynapseNodePermission, string> Lookup { get { return _lookup; } }
+
+        public SynapseNodePermissionEnumConverter() : base() { }
+        public SynapseNodePermissionEnumConverter(object notFoundValue) : base(notFoundValue) { }
     }
 }

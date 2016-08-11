@@ -58,7 +58,7 @@ namespace Synapse.RestClient
                 To = new AddTransactionRequestTo()
                 {
                     Id =  "55e9da8a86c2733ede53dac8",
-                    Type = SynapseNodeTransactionType.SYNAPSEUS
+                    Type = SynapseNodeType.SynapseUS
                 },
                 Amount = new AddTransactionRequestAmount()
                 {

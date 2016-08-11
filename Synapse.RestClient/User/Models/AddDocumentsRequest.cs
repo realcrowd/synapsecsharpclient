@@ -24,10 +24,10 @@ namespace Synapse.RestClient.User
 
         public string Alias { get; set; }
 
-        [JsonConverter(typeof(SynapseEntityTypeEnumConverter))]
+        [JsonConverter(typeof(SynapseEntityTypeEnumConverter), SynapseEntityType.Unknown)]
         public SynapseEntityType EntityType { get; set; }
 
-        [JsonConverter(typeof(SynapseEntityScopeEnumConverter))]
+        [JsonConverter(typeof(SynapseEntityScopeEnumConverter), SynapseEntityScope.Unknown)]
         public SynapseEntityScope EntityScope { get; set; }
 
         public int Day { get; set; }
@@ -63,19 +63,19 @@ namespace Synapse.RestClient.User
 
     public class AddDocumentsRequestPhysicalDocumentSubmission : AddDocumentsRequestAbstractDocumentSubmission
     {
-        [JsonConverter(typeof(SynapsePhysicalDocumentTypeEnumConverter))]
+        [JsonConverter(typeof(SynapsePhysicalDocumentTypeEnumConverter), SynapsePhysicalDocumentType.Unknown)]
         public SynapsePhysicalDocumentType DocumentType { get; set; }
     }
 
     public class AddDocumentsRequestVirtualDocumentSubmission : AddDocumentsRequestAbstractDocumentSubmission
     {
-        [JsonConverter(typeof(SynapseVirtualDocumentTypeEnumConverter))]
+        [JsonConverter(typeof(SynapseVirtualDocumentTypeEnumConverter), SynapseVirtualDocumentType.Unknown)]
         public SynapseVirtualDocumentType DocumentType { get; set; }
     }
 
     public class AddDocumentsRequestSocialDocumentSubmission : AddDocumentsRequestAbstractDocumentSubmission
     {
-        [JsonConverter(typeof(SynapseSocialDocumentTypeEnumConverter))]
+        [JsonConverter(typeof(SynapseSocialDocumentTypeEnumConverter), SynapseSocialDocumentType.Unknown)]
         public SynapseSocialDocumentType DocumentType { get; set; }
     }
 }

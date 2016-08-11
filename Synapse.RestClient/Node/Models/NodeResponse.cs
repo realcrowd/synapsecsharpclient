@@ -16,14 +16,14 @@ namespace Synapse.RestClient.Node
         [JsonProperty("_links")]
         public NodeResponseLinks Links { get; set; }
 
-        [JsonConverter(typeof(SynapseNodePermissionEnumConverter))]
+        [JsonConverter(typeof(SynapseNodePermissionEnumConverter), SynapseNodePermission.Unknown)]
         public SynapseNodePermission Allowed { get; set; }
 
         public ACHNodeResponseExtra Extra { get; set; }
 
         public bool IsActive { get; set; }
 
-        [JsonConverter(typeof(SynapseNodeTypeEnumConverter))]
+        [JsonConverter(typeof(SynapseNodeTypeEnumConverter), SynapseNodeType.Unknown)]
         public SynapseNodeType Type { get; set; }
     }
 

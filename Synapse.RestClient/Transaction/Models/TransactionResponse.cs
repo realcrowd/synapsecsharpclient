@@ -1,4 +1,5 @@
 ﻿using Newtonsoft.Json;
+using Synapse.RestClient.Node;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -100,8 +101,8 @@ namespace Synapse.RestClient.Transaction
 
     public class TransactionResponseNode
     {
-        [JsonConverter(typeof(SynapseNodeTransactionTypeEnumConverter))]
-        public SynapseNodeTransactionType Type { get; set; }
+        [JsonConverter(typeof(SynapseNodeTypeEnumConverter), SynapseNodeType.Unknown)]
+        public SynapseNodeType Type { get; set; }
 
         public string Id { get; set; }
 

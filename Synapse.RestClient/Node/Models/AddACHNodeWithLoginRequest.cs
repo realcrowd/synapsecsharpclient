@@ -9,7 +9,7 @@ namespace Synapse.RestClient.Node
 {
     public class AddACHNodeWithLoginRequest
     {
-        [JsonConverter(typeof(SynapseNodeTypeEnumConverter))]
+        [JsonConverter(typeof(SynapseNodeTypeEnumConverter), SynapseNodeType.Unknown)]
         public SynapseNodeType Type => SynapseNodeType.ACHUS;
 
         public AddACHNodeWithLoginRequestInfo Info { get; set; }

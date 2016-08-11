@@ -12,11 +12,19 @@ namespace Synapse.RestClient
 {
     internal abstract class EnumConverter<T> : JsonConverter
     {
+        protected abstract Dictionary<T, string> Lookup { get; }
+
+        public object NotFoundValue { get; set; }
+
         public EnumConverter()
+            : this(null)
         {
         }
 
-        protected abstract Dictionary<T, string> Lookup { get; }
+        public EnumConverter(object notFoundValue)
+        {
+            NotFoundValue = notFoundValue;
+        }
 
         public virtual T ToEnum(string str)
         {
@@ -24,7 +32,11 @@ namespace Synapse.RestClient
             if (reversed.ContainsKey(str))
                 return reversed[str];
 
-            throw new InvalidOperationException(String.Format("Unknown {0} {1}", typeof(T),  str));
+            if (NotFoundValue == null)
+            {
+                throw new InvalidOperationException(String.Format("Unknown {0} {1}", typeof(T),  str));
+            }
+            return (T)NotFoundValue;
         }
 
         public virtual string ToString(T val)
