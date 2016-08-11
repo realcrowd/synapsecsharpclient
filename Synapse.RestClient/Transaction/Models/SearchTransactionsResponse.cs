@@ -9,19 +9,14 @@ namespace Synapse.RestClient.Transaction
 {
     public class SearchTransactionsResponse
     {
-        [JsonProperty("error_code")]
         public string ErrorCode { get; set; }
 
-        [JsonProperty("http_code")]
         public string HttpCode { get; set; }
 
-        [JsonProperty("page")]
         public int Page { get; set; }
 
-        [JsonProperty("page_count")]
         public int PageCount { get; set; }
 
-        [JsonProperty("success")]
         public bool Success { get; set; }
 
         [JsonProperty("trans")]

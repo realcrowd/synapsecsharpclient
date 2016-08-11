@@ -63,27 +63,24 @@ namespace Synapse.RestClient.Node
         public async Task<NodesResponse> AddACHNodeAsync(SynapseApiUserCredentials apiUser, string userId, AddACHNodeRequest msg)
         {
             var req = new RestRequest(String.Format("users/{0}/nodes", HttpUtility.UrlPathEncode(userId)), Method.POST);
-            var body = JsonConvert.SerializeObject(msg);
 
-            var resp = await ExecuteRequestAsync(apiUser, body, req);
+            var resp = await ExecuteRequestAsync(apiUser, msg, req);
             return ParseResponse<NodesResponse>(resp);
         }
 
         public async Task<NodesResponse> AddACHNodeWithLoginAsync(SynapseApiUserCredentials apiUser, string userId, AddACHNodeWithLoginRequest msg)
         {
             var req = new RestRequest(String.Format("users/{0}/nodes", HttpUtility.UrlPathEncode(userId)), Method.POST);
-            var body = JsonConvert.SerializeObject(msg);
 
-            var resp = await ExecuteRequestAsync(apiUser, body, req);
+            var resp = await ExecuteRequestAsync(apiUser, msg, req);
             return ParseResponse<NodesResponse>(resp);
         }
 
         public async Task<NodesResponse> AddWireUSNodeAsync(SynapseApiUserCredentials apiUser, string userId, AddWireUSNodeRequest msg)
         {
             var req = new RestRequest(String.Format("users/{0}/nodes", HttpUtility.UrlPathEncode(userId)), Method.POST);
-            var body = JsonConvert.SerializeObject(msg);
 
-            var resp = await ExecuteRequestAsync(apiUser, body, req);
+            var resp = await ExecuteRequestAsync(apiUser, msg, req);
             return ParseResponse<NodesResponse>(resp);
         }
         
@@ -100,9 +97,8 @@ namespace Synapse.RestClient.Node
         {
             var req = new RestRequest(String.Format("users/{0}/nodes/{1}", 
                 HttpUtility.UrlPathEncode(userId), HttpUtility.UrlPathEncode(nodeId)), Method.PATCH);
-            var body = JsonConvert.SerializeObject(msg);
 
-            var resp = await ExecuteRequestAsync(apiUser, body, req);
+            var resp = await ExecuteRequestAsync(apiUser, msg, req);
             return ParseResponse<NodeResponse>(resp);
         }
 

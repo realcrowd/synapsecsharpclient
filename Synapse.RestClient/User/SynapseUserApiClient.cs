@@ -45,9 +45,8 @@ namespace Synapse.RestClient.User
         public async Task<RefreshTokenResponse> RefreshTokenAsync(SynapseApiUserCredentials apiUser, string userId, RefreshTokenRequest msg)
         {
             var req = new RestRequest(String.Format("oauth/{0}", HttpUtility.UrlPathEncode(userId)), Method.POST);
-            var body = JsonConvert.SerializeObject(msg);
 
-            var resp = await ExecuteRequestAsync(apiUser, body, req);
+            var resp = await ExecuteRequestAsync(apiUser, msg, req);
             return ParseResponse<RefreshTokenResponse>(resp);
         }
 
@@ -74,18 +73,16 @@ namespace Synapse.RestClient.User
         public async Task<UserResponse> CreateUserAsync(SynapseApiUserCredentials apiUser, CreateUserRequest msg)
         {
             var req = new RestRequest("users", Method.POST);
-            var body = JsonConvert.SerializeObject(msg);
 
-            var resp = await ExecuteRequestAsync(apiUser, body, req);
+            var resp = await ExecuteRequestAsync(apiUser, msg, req);
             return ParseResponse<UserResponse>(resp);
         }
 
         public async Task<UserResponse> UpdateUserAsync(SynapseApiUserCredentials apiUser, string userId, UpdateUserRequest msg)
         {
             var req = new RestRequest(String.Format("users/{0}", HttpUtility.UrlPathEncode(userId)), Method.PATCH);
-            var body = JsonConvert.SerializeObject(msg);
 
-            var resp = await ExecuteRequestAsync(apiUser, body, req);
+            var resp = await ExecuteRequestAsync(apiUser, msg, req);
             return ParseResponse<UserResponse>(resp);
         }
 
@@ -100,18 +97,16 @@ namespace Synapse.RestClient.User
         public async Task<UserResponse> AddDocumentsAsync(SynapseApiUserCredentials apiUser, string userId, AddDocumentsRequest msg)
         {
             var req = new RestRequest(String.Format("users/{0}", HttpUtility.UrlPathEncode(userId)), Method.PATCH);
-            var body = JsonConvert.SerializeObject(msg);
 
-            var resp = await ExecuteRequestAsync(apiUser, body, req);
+            var resp = await ExecuteRequestAsync(apiUser, msg, req);
             return ParseResponse<UserResponse>(resp);
         }
 
         public async Task<UserResponse> UpdateDocumentsAsync(SynapseApiUserCredentials apiUser, string userId, UpdateDocumentsRequest msg)
         {
             var req = new RestRequest(String.Format("users/{0}", HttpUtility.UrlPathEncode(userId)), Method.PATCH);
-            var body = JsonConvert.SerializeObject(msg);
 
-            var resp = await ExecuteRequestAsync(apiUser, body, req);
+            var resp = await ExecuteRequestAsync(apiUser, msg, req);
             return ParseResponse<UserResponse>(resp);
         }
     }

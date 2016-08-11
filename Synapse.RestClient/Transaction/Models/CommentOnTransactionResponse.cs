@@ -9,16 +9,13 @@ namespace Synapse.RestClient.Transaction
 {
     public class CommentOnTransactionResponse
     {
-        [JsonProperty("error_code")]
         public string ErrorCode { get; set; }
 
-        [JsonProperty("http_code")]
         public string HttpCode { get; set; }
 
         [JsonProperty("trans")]
         public TransactionResponse Transaction { get; set; }
 
-        [JsonProperty("success")]
         public bool Success { get; set; }
     }
 }

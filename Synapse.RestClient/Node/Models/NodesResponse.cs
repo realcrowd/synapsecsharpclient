@@ -9,16 +9,12 @@ namespace Synapse.RestClient.Node
 {
     public class NodesResponse
     {
-        [JsonProperty("error_code")]
         public string ErrorCode { get; set; }
 
-        [JsonProperty("http_code")]
         public string HttpCode { get; set; }
 
-        [JsonProperty("nodes")]
         public NodeResponse[] Nodes { get; set; }
 
-        [JsonProperty("success")]
         public bool Success { get; set; }
     }
 }

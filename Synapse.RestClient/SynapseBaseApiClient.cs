@@ -17,6 +17,11 @@ namespace Synapse.RestClient
         SynapseApiClientCredentials _creds;
         IRestClient _api;
 
+        JsonSerializerSettings _jsonSettings = new JsonSerializerSettings
+        {
+            ContractResolver = new SnakeCasePropertyNamesContractResolver()
+        };
+
         public SynapseBaseApiClient(SynapseApiClientCredentials creds, string baseUrl) 
             : this(creds, new RestSharp.RestClient(new Uri(baseUrl, UriKind.Absolute)))
         {
@@ -30,11 +35,12 @@ namespace Synapse.RestClient
 
         public event RequestEventHandler OnAfterRequest = delegate { };
 
-        protected async Task<IRestResponse> ExecuteRequestAsync(SynapseApiUserCredentials apiUser, string body, IRestRequest req)
+        protected async Task<IRestResponse> ExecuteRequestAsync(SynapseApiUserCredentials apiUser, object body, IRestRequest req)
         {
-            if (!String.IsNullOrEmpty(body))
+            if (body != null)
             {
-                req.AddParameter("application/json", body, ParameterType.RequestBody);
+                var serializedBody = JsonConvert.SerializeObject(body, this._jsonSettings);
+                req.AddParameter("application/json", serializedBody, ParameterType.RequestBody);
             }
 
             req.AddHeader("X-SP-GATEWAY", String.Format("{0}|{1}", this._creds.ClientId, this._creds.ClientSecret));
@@ -50,10 +56,10 @@ namespace Synapse.RestClient
         {
             if (resp.StatusCode != System.Net.HttpStatusCode.OK)
             {
-                var error = JsonConvert.DeserializeObject<SynapseApiErrorResponse>(resp.Content);
+                var error = JsonConvert.DeserializeObject<SynapseApiErrorResponse>(resp.Content, this._jsonSettings);
                 throw new SynapseApiErrorException(error);
             }
-            var parsed = JsonConvert.DeserializeObject<T>(resp.Content);
+            var parsed = JsonConvert.DeserializeObject<T>(resp.Content, this._jsonSettings);
             return parsed;
         }
 

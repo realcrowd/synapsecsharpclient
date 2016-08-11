@@ -57,9 +57,8 @@ namespace Synapse.RestClient.Transaction
         {
             var req = new RestRequest(String.Format("users/{0}/nodes/{1}/trans", 
                 HttpUtility.UrlPathEncode(userId), HttpUtility.UrlPathEncode(nodeId)), Method.POST);
-            var body = JsonConvert.SerializeObject(msg);
 
-            var resp = await ExecuteRequestAsync(apiUser, body, req);
+            var resp = await ExecuteRequestAsync(apiUser, msg, req);
             return ParseResponse<TransactionResponse>(resp);
         }
 
@@ -76,9 +75,8 @@ namespace Synapse.RestClient.Transaction
         {
             var req = new RestRequest(String.Format("users/{0}/nodes/{1}/trans/{2}", 
                 HttpUtility.UrlPathEncode(userId), HttpUtility.UrlPathEncode(nodeId), HttpUtility.UrlPathEncode(transId)), Method.PATCH);
-            var body = JsonConvert.SerializeObject(msg);
 
-            var resp = await ExecuteRequestAsync(apiUser, body, req);
+            var resp = await ExecuteRequestAsync(apiUser, msg, req);
             return ParseResponse<CommentOnTransactionResponse>(resp);
         }
 

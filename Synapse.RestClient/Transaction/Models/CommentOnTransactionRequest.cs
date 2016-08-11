@@ -9,7 +9,6 @@ namespace Synapse.RestClient.Transaction
 {
     public class CommentOnTransactionRequest
     {
-        [JsonProperty("comment")]
         public string Comment { get; set; }
     }
 }

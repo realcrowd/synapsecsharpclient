@@ -9,7 +9,6 @@ namespace Synapse.RestClient.User
 {
     public class RefreshTokenRequest
     {
-        [JsonProperty("refresh_token")]
         public string RefreshToken { get; set; }
     }
 }
