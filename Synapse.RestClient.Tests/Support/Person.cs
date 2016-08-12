@@ -30,6 +30,7 @@ namespace Synapse.RestClient
                 DocumentValue = documentValue
             };
         }
+
         private static string RandomString(int length)
         {
             var chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";

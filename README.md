@@ -1,25 +1,39 @@
 # Unofficial SynapsePay .NET Rest Client
 
-Provides API interfaces & strongly-typed request/responses for SynapsePay's v3 API.
+Provides API interfaces & strongly-typed request/responses for SynapsePay's v3 Rest [API](https://docs.synapsepay.com/v3.1/docs).
 
 # Usage
 ## Simplest
 ```csharp
-var api = new SynapseUserApiClient(new SynapseApiCredentials { 
-            ClientId="<clientid>", 
-            ClientSecret="<clientsecret>"
-}, "https://sandbox.synapsepay.com/api/v3/");
-var resp = await api.CreateUserAsync(new CreateUserRequest
-            {
-                EmailAddress = "olfred@sleepwell.biz",
-                FirstName = "Freddy",
-                LastName = "Krueger",
-                PhoneNumber = "555-123-1233",
-                IpAddress = "10.1.0.1",
-                LocalId = "LocalId",
-                Fingerprint = "<fingerprint>"
-            });
-Assert.IsTrue(resp.Success);
+var api = new SynapseUserApiClient(new SynapseApiClientCredentials 
+    {
+        ClientId="<clientid>", 
+        ClientSecret="<clientsecret>"
+    }, "https://sandbox.synapsepay.com/api/3/");
+
+var apiUser = new SynapseApiUserCredentials {
+    Fingerprint = "<fingerprint>",
+    IpAddressOfUser = "10.1.0.1"
+};
+
+var userResp = await api.CreateUserAsync(apiUser, new CreateUserRequest
+    {
+        Logins = new CreateUserRequestLogin[]
+        {
+            new CreateUserRequestLogin {
+                Email = "olfred@sleepwell.biz",
+                ReadOnly = true
+            }
+        },
+        PhoneNumbers = new string[] { "555-123-1233" },
+        LegalNames = new string[] { "Freddy Krueger" },
+        Extra = new CreateUserRequestExtra
+        {
+            SuppId = "LocalId",
+            CipTag = 1
+    });
+
+Assert.IsTrue(!string.IsNullOrEmpty(userResp.RefreshToken));
 ```
 
 ## If calling more than one resource type
@@ -32,7 +46,7 @@ var creds = new SynapseApiCredentials
 var url = ConfigurationManager.AppSettings["SynapseBaseUrl"];
 var factory = new SynapseRestClientFactory(creds, url);
 var userApi = factory.CreateUserApiClient();
-var node = factory.CreateNodeApiClient();
+var nodeApi = factory.CreateNodeApiClient();
 //etc..
 ```
 

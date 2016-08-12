@@ -14,10 +14,11 @@ namespace Synapse.RestClient
     [TestClass]
     public class TransactionApiTests : BaseScenarioTest
     {
-        private CreateUserResponse Sender;
-        private AddACHNodeResponse SenderNode;
+        private UserResponse Sender;
+        private ACHNodeResponse SenderNode;
 
         private ISynapseTransactionApiClient _api;
+        private SynapseApiUserCredentials _apiUser;
 
         [TestInitialize]
         public override void Init()
@@ -27,55 +28,96 @@ namespace Synapse.RestClient
 
         private async Task InitializeAsync()
         {
-            this.Person = this.CreatePerson(SynapseTestDocumentValues.PassValidationNoVerificationRequired);
-            this._api = Factory.CreateTransactionClient();
             var userApi = this.Factory.CreateUserClient();
             var nodeApi = this.Factory.CreateNodeClient();
-            var user = await userApi.CreateUserAsync(this.CreateUserRequest());
-            var kyc = await userApi.AddKycAsync(this.CreateKycRequest(user.OAuth));
-            var doc = await userApi.AddDocAsync(this.CreateAddDocRequest(user.OAuth));
-            this.Sender = user;
-            this.SenderNode = await nodeApi.AddACHNodeAsync(new AddACHNodeRequest
+
+            var apiUser = this.CreateSynapseApiUser();
+            var user = await userApi.CreateUserAsync(apiUser, this.CreateUserRequest());
+            var refreshToken = await userApi.RefreshTokenAsync(apiUser, user.Id, new RefreshTokenRequest() { RefreshToken = user.RefreshToken });
+            apiUser.OAuthKey = refreshToken.OAuthKey;
+            user = await userApi.AddDocumentsAsync(apiUser, user.Id, this.CreateAddDocumentsRequest());
+            var result = await nodeApi.AddACHNodeAsync(apiUser, user.Id, this.CreateAddACHNodeRequest());
+            var node = await nodeApi.VerifyNodeAsync(apiUser, user.Id, result.Nodes[0].Id, new VerifyNodeRequest()
             {
-                OAuth = user.OAuth,
-                AccountClass = SynapseNodeClass.Checking,
-                AccountNumber = "123456786",
-                RoutingNumber = "021000021", //Chase NYC
-                AccountType = SynapseNodeType.Personal,
-                Fingerprint = Fingerprint,
-                LocalId = "1234",
-                NameOnAccount = "Freddy Krueger Jr.",
-                Nickname = "Freddy's Chase Checking"
+                MicroDeposits = new decimal[] { 0.10m, 0.10m }
             });
-            
+
+            this._apiUser = apiUser;
+            this.Sender = user;
+            this.SenderNode = (ACHNodeResponse)node;
+
+            this._api = Factory.CreateTransactionClient();
         }
 
         [TestMethod]
         public async Task AddsTransaction()
         {
             await InitializeAsync();
-            var trans =
-                await
-                    this._api.AddTransactionAsync(new AddTransactionRequest()
-                    {
-                        Amount = 109.10m,
-                        Currency = SynapseCurrencies.USD,
-                        Fingerprint = Fingerprint,
-                        FromNodeType = SynapseNodeTransactionType.ACHUS,
-                        FromNodeId = SenderNode.SynapseNodeOId,
-                        ToNodeType = SynapseNodeTransactionType.SYNAPSEUS,
-                        ToNodeId = "55e9da8a86c2733ede53dac8",
-                        LocalId = "1234",
-                        IpAddress = "10.0.0.1",
-                        OAuth = this.Sender.OAuth,
-                        ProcessOn = 0,
-                        Note = "Offer ALKJ-JA98",
-                    });
+            var trans = await this._api.AddTransactionAsync(this._apiUser, this.Sender.Id, this.SenderNode.Id, new AddTransactionRequest()
+            {
+                To = new AddTransactionRequestTo()
+                {
+                    Id =  "55e9da8a86c2733ede53dac8",
+                    Type = SynapseNodeType.SynapseUS
+                },
+                Amount = new AddTransactionRequestAmount()
+                {
+                    Amount = 109.10m,
+                    //Currency = SynapseCurrencies.USD,
+                },
+                Extra = new AddTransactionRequestExtra()
+                {
+                    Ip = "10.0.0.1",
+                    ProcessOn = 0,
+                    Note = "Offer ALKJ-JA98",
+                    SuppId = "1234"
+                }
+            });
 
-            trans.Success.ShouldBeTrue();
-            trans.Status.ShouldNotBeNull();
-            trans.Status.Status.ShouldEqual(SynapseTransactionStatusCode.Created);
-            trans.TransactionOId.ShouldNotBeEmpty();
+            trans.ShouldNotBeNull();
+            trans.Id.ShouldNotBeEmpty();
+            trans.RecentStatus.Status.ShouldEqual(SynapseTransactionStatusCode.Created);
+
+            var resp = await this._api.CommentOnTransactionAsync(this._apiUser, this.Sender.Id, this.SenderNode.Id, trans.Id, new CommentOnTransactionRequest()
+            {
+                Comment = "New test comment"
+            });
+
+            resp.Success.ShouldBeTrue();
+            resp.HttpCode.ShouldEqual("200");
+            resp.Transaction.Id.ShouldEqual(trans.Id);
+            resp.Transaction.RecentStatus.Note.ShouldContain("New test comment");
+
+            var results = await this._api.SearchTransactions(this._apiUser, this.Sender.Id, this.SenderNode.Id);
+
+            results.Success.ShouldBeTrue();
+            results.Page.ShouldEqual(1);
+            results.Transactions.ShouldNotBeNull();
+            results.Transactions.Length.ShouldEqual(1);
+            results.Transactions[0].Id.ShouldEqual(trans.Id);
+
+            var trans2 = await this._api.GetTransactionAsync(this._apiUser, this.Sender.Id, this.SenderNode.Id, trans.Id);
+
+            trans2.Id.ShouldNotBeNull();
+            trans2.Id.ShouldEqual(trans.Id);
+            trans2.Amount.Amount.ShouldEqual(trans.Amount.Amount);
+            trans2.Amount.Currency.ShouldEqual("USD");
+
+            var trans3 = await this._api.DeleteTransactionAsync(this._apiUser, this.Sender.Id, this.SenderNode.Id, trans.Id);
+
+            trans3.Id.ShouldNotBeNull();
+            trans3.Id.ShouldEqual(trans.Id);
+            trans3.RecentStatus.Status.ShouldEqual(SynapseTransactionStatusCode.Cancelled);
+
+            results = await this._api.SearchTransactions(this._apiUser, this.Sender.Id, this.SenderNode.Id);
+
+            results.Success.ShouldBeTrue();
+            // Cancelled transactions still show up
+            results.Page.ShouldEqual(1);
+            results.Transactions.ShouldNotBeNull();
+            results.Transactions.Length.ShouldEqual(1);
+            results.Transactions[0].Id.ShouldEqual(trans.Id);
+            results.Transactions[0].RecentStatus.Status.ShouldEqual(SynapseTransactionStatusCode.Cancelled);
         }
     }
 }
