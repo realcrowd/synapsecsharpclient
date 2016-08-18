@@ -16,21 +16,23 @@ namespace Synapse.RestClient
     {
         SynapseApiClientCredentials _creds;
         IRestClient _api;
+        Action<SynapseApiErrorException> _apiErrorLogger;
 
         JsonSerializerSettings _jsonSettings = new JsonSerializerSettings
         {
             ContractResolver = new SnakeCasePropertyNamesContractResolver()
         };
 
-        public SynapseBaseApiClient(SynapseApiClientCredentials creds, string baseUrl) 
-            : this(creds, new RestSharp.RestClient(new Uri(baseUrl, UriKind.Absolute)))
+        public SynapseBaseApiClient(SynapseApiClientCredentials creds, string baseUrl, Action<SynapseApiErrorException> apiErrorLogger = null) 
+            : this(creds, new RestSharp.RestClient(new Uri(baseUrl, UriKind.Absolute)), apiErrorLogger)
         {
         }
 
-        public SynapseBaseApiClient(SynapseApiClientCredentials creds, IRestClient client)
+        public SynapseBaseApiClient(SynapseApiClientCredentials creds, IRestClient client, Action<SynapseApiErrorException> apiErrorLogger = null)
         {
             this._creds = creds;
             this._api = client;
+            this._apiErrorLogger = apiErrorLogger;
         }
 
         public event RequestEventHandler OnAfterRequest = delegate { };
@@ -57,7 +59,9 @@ namespace Synapse.RestClient
             if (resp.StatusCode != System.Net.HttpStatusCode.OK)
             {
                 var error = JsonConvert.DeserializeObject<SynapseApiErrorResponse>(resp.Content, this._jsonSettings);
-                throw new SynapseApiErrorException(error);
+                var ex = new SynapseApiErrorException(error);
+                this._apiErrorLogger?.Invoke(ex);
+                throw ex;
             }
             var parsed = JsonConvert.DeserializeObject<T>(resp.Content, this._jsonSettings);
             return parsed;

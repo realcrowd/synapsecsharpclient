@@ -32,13 +32,13 @@ namespace Synapse.RestClient.User
 
     public class SynapseUserApiClient : SynapseBaseApiClient, ISynapseUserApiClient
     {
-        public SynapseUserApiClient(SynapseApiClientCredentials creds, string baseUrl)
-            : base (creds, baseUrl)
+        public SynapseUserApiClient(SynapseApiClientCredentials creds, string baseUrl, Action<SynapseApiErrorException> apiErrorLogger = null)
+            : base (creds, baseUrl, apiErrorLogger)
         {
         }
 
-        public SynapseUserApiClient(SynapseApiClientCredentials creds, IRestClient client)
-            : base(creds, client)
+        public SynapseUserApiClient(SynapseApiClientCredentials creds, IRestClient client, Action<SynapseApiErrorException> apiErrorLogger = null)
+            : base(creds, client, apiErrorLogger)
         {
         }
 

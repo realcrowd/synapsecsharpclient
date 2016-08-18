@@ -26,13 +26,13 @@ namespace Synapse.RestClient.Transaction
 
     public class SynapseTransactionApiClient : SynapseBaseApiClient, ISynapseTransactionApiClient
     {
-        public SynapseTransactionApiClient(SynapseApiClientCredentials creds, string baseUrl)
-            : base (creds, baseUrl)
+        public SynapseTransactionApiClient(SynapseApiClientCredentials creds, string baseUrl, Action<SynapseApiErrorException> apiErrorLogger = null)
+            : base (creds, baseUrl, apiErrorLogger)
         {
         }
 
-        public SynapseTransactionApiClient(SynapseApiClientCredentials creds, IRestClient client)
-            : base(creds, client)
+        public SynapseTransactionApiClient(SynapseApiClientCredentials creds, IRestClient client, Action<SynapseApiErrorException> apiErrorLogger = null)
+            : base(creds, client, apiErrorLogger)
         {
         }
 
