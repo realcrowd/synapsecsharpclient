@@ -13,26 +13,28 @@ namespace Synapse.RestClient
     {
         private SynapseApiClientCredentials _creds;
         private string _baseUrl;
+        private Action<SynapseApiErrorException> _apiErrorLogger;
 
-        public SynapseRestClientFactory(SynapseApiClientCredentials credentials, string baseUrl)
+        public SynapseRestClientFactory(SynapseApiClientCredentials credentials, string baseUrl, Action<SynapseApiErrorException> apiErrorLogger = null)
         {
             this._creds = credentials;
             this._baseUrl = baseUrl;
+            this._apiErrorLogger = apiErrorLogger;
         }
 
         public ISynapseUserApiClient CreateUserClient()
         {
-            return new SynapseUserApiClient(this._creds, this._baseUrl);
+            return new SynapseUserApiClient(this._creds, this._baseUrl, this._apiErrorLogger);
         }
 
         public ISynapseNodeApiClient CreateNodeClient()
         {
-            return new SynapseNodeApiClient(this._creds, this._baseUrl);
+            return new SynapseNodeApiClient(this._creds, this._baseUrl, this._apiErrorLogger);
         }
 
         public ISynapseTransactionApiClient CreateTransactionClient()
         {
-            return new SynapseTransactionApiClient(this._creds, this._baseUrl);
+            return new SynapseTransactionApiClient(this._creds, this._baseUrl, this._apiErrorLogger);
         }
     }
 }

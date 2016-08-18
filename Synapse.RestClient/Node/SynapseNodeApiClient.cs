@@ -30,13 +30,13 @@ namespace Synapse.RestClient.Node
 
     public class SynapseNodeApiClient : SynapseBaseApiClient, ISynapseNodeApiClient
     {
-        public SynapseNodeApiClient(SynapseApiClientCredentials creds, string baseUrl)
-            : base (creds, baseUrl)
+        public SynapseNodeApiClient(SynapseApiClientCredentials creds, string baseUrl, Action<SynapseApiErrorException> apiErrorLogger = null)
+            : base (creds, baseUrl, apiErrorLogger)
         {
         }
 
-        public SynapseNodeApiClient(SynapseApiClientCredentials creds, IRestClient client)
-            : base(creds, client)
+        public SynapseNodeApiClient(SynapseApiClientCredentials creds, IRestClient client, Action<SynapseApiErrorException> apiErrorLogger = null)
+            : base(creds, client, apiErrorLogger)
         {
         }
 
