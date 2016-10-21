@@ -10,7 +10,7 @@ namespace Synapse.RestClient
     ///</summary>
     internal static class UnixDateTimeHelper
     {
-        private static readonly DateTime epoc = new DateTime(1970, 1, 1);
+        private static readonly DateTime epoc = new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc);
         private static readonly DateTimeOffset epocOffset = new DateTimeOffset(1970, 1, 1, 0, 0, 0, TimeSpan.Zero);
 
         static UnixDateTimeHelper()
